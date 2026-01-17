@@ -70,13 +70,11 @@ const DashboardPage = () => {
         return;
       }
 
-      // If the selectedFile is required (e.g., the image must be uploaded), validate that as well
-      if (!selectedFile && isImageRequired) {
+      if (!selectedFile ) {
         toast.error("Image is required.");
         return;
       }
 
-      // Construct form data
       const formData = new FormData();
 
       const jsonData = {
@@ -97,7 +95,7 @@ const DashboardPage = () => {
       toast.success("Hero banner updated!");
     } catch (err) {
       console.log(err);
-      toast.error(err?.data?.message || "Operation failed.");
+      toast.error(err?.data?.message);
     }
   };
 
