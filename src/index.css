@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+/* In your CSS file (e.g., styles.css or index.css) */
+.text-dashboard {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.125rem; /* equivalent to text-lg */
+  font-weight: 600; /* equivalent to font-semibold */
+  color: #9ca3af; /* Equivalent to text-neutral-400 */
+}

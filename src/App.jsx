@@ -1,0 +1,119 @@
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import VerifyCodePage from "./pages/VerifyCodePage";
+import SetNewPasswordPage from "./pages/SetNewPasswordPage";
+import Layout from "./pages/Layout"; // Import Layout
+import DashboardPage from "./pages/Dashboard";
+import Books from "./pages/Books";
+import Characters from "./pages/Characters";
+import Blogs from "./pages/Blogs";
+import WorldAndThemes from "./pages/WorldAndThemes";
+import AccountSettings from "./pages/AccountSettings";
+import EditProfile from "./pages/EditProfile";
+import PrivacySettings from "./pages/PrivacySettings";
+import TermsAndConditions from "./pages/TermsAndConditions";
+import { getCookie } from "./services/cookies";
+function App() {
+  const token = getCookie("NessasBrokenWorldAuthToken");
+  return (
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            token ? <Navigate to="/dashboard" /> : <Navigate to="/login" />
+          }
+        />
+
+        {/* Routes without Sidebar */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgetPassword" element={<ForgotPasswordPage />} />
+        <Route path="/verifyCode" element={<VerifyCodePage />} />
+        <Route path="/setNewPassword" element={<SetNewPasswordPage />} />
+
+        {/* Routes with Sidebar (using Layout) */}
+        <Route
+          path="/dashboard"
+          element={
+            <Layout>
+              <DashboardPage />
+            </Layout>
+          }
+        />
+        <Route
+          path="/books"
+          element={
+            <Layout>
+              <Books />
+            </Layout>
+          }
+        />
+        <Route
+          path="/characters"
+          element={
+            <Layout>
+              <Characters />
+            </Layout>
+          }
+        />
+        <Route
+          path="/blogs"
+          element={
+            <Layout>
+              <Blogs />
+            </Layout>
+          }
+        />
+        <Route
+          path="/worldandthemes"
+          element={
+            <Layout>
+              <WorldAndThemes />
+            </Layout>
+          }
+        />
+        <Route
+          path="/accountsettings"
+          element={
+            <Layout>
+              <AccountSettings />
+            </Layout>
+          }
+        />
+        <Route
+          path="/editprofile"
+          element={
+            <Layout>
+              <EditProfile />
+            </Layout>
+          }
+        />
+        <Route
+          path="/privacysettings"
+          element={
+            <Layout>
+              <PrivacySettings />
+            </Layout>
+          }
+        />
+        <Route
+          path="/termsandconditions"
+          element={
+            <Layout>
+              <TermsAndConditions />
+            </Layout>
+          }
+        />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
