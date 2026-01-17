@@ -64,9 +64,21 @@ const DashboardPage = () => {
 
   const handleSubmit = async () => {
     try {
+      // Frontend validation
+      if (!headline || !description) {
+        toast.error("Title and description are required.");
+        return;
+      }
+
+      // If the selectedFile is required (e.g., the image must be uploaded), validate that as well
+      if (!selectedFile && isImageRequired) {
+        toast.error("Image is required.");
+        return;
+      }
+
+      // Construct form data
       const formData = new FormData();
 
-      // Constructing the 'data' field as a JSON string per your Postman image
       const jsonData = {
         title: headline,
         description: description,
@@ -75,16 +87,20 @@ const DashboardPage = () => {
 
       formData.append("data", JSON.stringify(jsonData));
 
+      // Append image only if there is a selected file
       if (selectedFile) {
         formData.append("image", selectedFile);
       }
 
+      // Make API call to update hero banner
       await updateHeroBanner(formData).unwrap();
       toast.success("Hero banner updated!");
     } catch (err) {
+      console.log(err);
       toast.error(err?.data?.message || "Operation failed.");
     }
   };
+
   // --- API INTEGRATION ENDS HERE ---
 
   return (
@@ -279,7 +295,7 @@ const IndependentChartCard = ({ title, type, dataKey, chartType }) => {
   const endYear = 2050;
   const years = Array.from(
     { length: endYear - startYear + 1 },
-    (_, i) => startYear + i
+    (_, i) => startYear + i,
   );
 
   const chartData =
