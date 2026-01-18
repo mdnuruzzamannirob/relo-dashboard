@@ -39,17 +39,15 @@ const Sidebar = ({ sidebarVisible, setSidebarVisible }) => {
       <NavLink
         to={to}
         className={({ isActive }) =>
-          `w-full px-4 py-3 rounded-2xl flex items-center group transition-all duration-200 ${
-            isActive ? "bg-white text-black" : "text-white hover:bg-neutral-800"
+          `w-full px-4 py-3 rounded-2xl flex items-center group transition-all duration-200 ${isActive ? "bg-white text-black" : "text-white hover:bg-neutral-800"
           }`
         }
       >
         {({ isActive }) => (
           <>
             <Icon
-              className={`mr-3 size-5 ${
-                isActive ? "text-black" : "group-hover:text-white"
-              }`}
+              className={`mr-3 size-5 ${isActive ? "text-black" : "group-hover:text-white"
+                }`}
             />
             {sidebarVisible && <span className="font-medium">{label}</span>}
           </>
@@ -60,13 +58,16 @@ const Sidebar = ({ sidebarVisible, setSidebarVisible }) => {
 
   return (
     <div
-      className={`fixed top-0 left-0 h-screen flex flex-col p-5 transition-all duration-300 bg-[#0C0E0F] text-white z-50 ${
-        sidebarVisible ? "w-64" : "w-24"
-      }`}
+      className={`fixed top-0 left-0 h-screen flex flex-col p-5 transition-all duration-300 bg-[#102837] text-white z-50 ${sidebarVisible ? "w-64" : "w-24"
+        }`}
     >
       <div className="flex items-center justify-between mb-8 w-full relative">
         {sidebarVisible && (
-          <img src={logo} alt="Logo" className="h-10 w-auto" />
+          // <img src={logo} alt="Logo" className="h-10 w-auto" />
+          <div>
+            <p className="font-bold text-2xl text-center">CAYRE</p>
+            <p className="text-xs">Cayman Resellers</p>
+          </div>
         )}
         <div
           className={
@@ -77,11 +78,10 @@ const Sidebar = ({ sidebarVisible, setSidebarVisible }) => {
         >
           <button
             onClick={toggleSidebar}
-            className={`${
-              sidebarVisible
+            className={`${sidebarVisible
                 ? "h-full"
                 : "h-14 w-10 flex items-center justify-center border-neutral-800 shadow-xl"
-            } text-white focus:outline-none transition-all duration-300 hover:bg-neutral-900 rounded-lg`}
+              } text-white focus:outline-none transition-all duration-300 hover:bg-neutral-900 rounded-lg`}
           >
             <FaBars className="w-5 h-5" />
           </button>

@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import Text from "../components/Text";
 import Inputbox from "../components/InputBox";
 import Button from "../components/Button";
-import { useLoginMutation } from "../services/allApi";
-import { setCookie } from "../services/cookies";
+
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -13,41 +11,41 @@ const LoginPage = () => {
   const [remember, setRemember] = useState(false);
 
   const navigate = useNavigate();
-  const [login, { isLoading }] = useLoginMutation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email || !password) {
-      toast.error("Please fill in all fields");
-      return;
-    }
+    // if (!email || !password) {
+    //   toast.error("Please fill in all fields");
+    //   return;
+    // }
 
-    try {
-      // .unwrap() allows us to use standard try/catch with RTK Query
-      const response = await login({ email, password }).unwrap();
+    // try {
+    //   // .unwrap() allows us to use standard try/catch with RTK Query
+    //   const response = await login({ email, password }).unwrap();
 
-      if (response?.success) {
-        const token = response.data?.token;
+    //   if (response?.success) {
+    //     const token = response.data?.token;
 
-        // Save token to cookie (7 days if 'remember' is checked)
-        setCookie("NessasBrokenWorldAuthToken", token, {
-          path: "/",
-          maxAge: remember ? 7 * 24 * 60 * 60 : undefined,
-        });
+    //     // Save token to cookie (7 days if 'remember' is checked)
+    //     setCookie("NessasBrokenWorldAuthToken", token, {
+    //       path: "/",
+    //       maxAge: remember ? 7 * 24 * 60 * 60 : undefined,
+    //     });
 
-        // Store user data for UI personalization
-        localStorage.setItem("user", JSON.stringify(response.data.userData));
+    //     // Store user data for UI personalization
+    //     localStorage.setItem("user", JSON.stringify(response.data.userData));
 
-        toast.success(response.message || "Login Successful");
-        navigate("/dashboard");
-      }
-    } catch (err) {
-      // Handles 400/500 errors from the server
-      const errorMsg =
-        err?.data?.message || "Invalid credentials. Please try again.";
-      toast.error(errorMsg);
-    }
+    //     toast.success(response.message || "Login Successful");
+    //     navigate("/dashboard");
+    //   }
+    // } catch (err) {
+    //   // Handles 400/500 errors from the server
+    //   const errorMsg =
+    //     err?.data?.message || "Invalid credentials. Please try again.";
+    //   toast.error(errorMsg);
+    // }
+    navigate("/dashboard");
   };
 
   return (
@@ -56,11 +54,11 @@ const LoginPage = () => {
       <div className="bg-white p-10 rounded-2xl shadow-sm border border-gray-100 w-150">
         <div className="text-center mb-8">
           <Text
-            text="Welcome Back"
+            text="Login to your account"
             className="text-2xl font-bold text-gray-800"
           />
           <p className="text-sm text-gray-500 mt-2">
-            Enter your details to manage your account
+            Please enter your email and password to continue
           </p>
         </div>
 
@@ -109,9 +107,9 @@ const LoginPage = () => {
 
           <div className="pt-2">
             <Button
-              buttonText={isLoading ? "Signing in..." : "Sign In"}
-              disabled={isLoading}
-              loading={isLoading} // Pass the API loading state here
+              buttonText={"Sign In"}
+              // disabled={isLoading}
+              // loading={isLoading} // Pass the API loading state here
               className="w-full py-3 transition-all active:scale-[0.98]"
             />
           </div>

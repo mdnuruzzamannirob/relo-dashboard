@@ -62,41 +62,8 @@ const DashboardPage = () => {
     }
   };
 
-  const handleSubmit = async () => {
-    try {
-      // Frontend validation
-      if (!headline || !description) {
-        toast.error("Title and description are required.");
-        return;
-      }
-
-      if (!selectedFile ) {
-        toast.error("Image is required.");
-        return;
-      }
-
-      const formData = new FormData();
-
-      const jsonData = {
-        title: headline,
-        description: description,
-        isActive: heroBannerData?.data?.isActive ?? false,
-      };
-
-      formData.append("data", JSON.stringify(jsonData));
-
-      // Append image only if there is a selected file
-      if (selectedFile) {
-        formData.append("image", selectedFile);
-      }
-
-      // Make API call to update hero banner
-      await updateHeroBanner(formData).unwrap();
-      toast.success("Hero banner updated!");
-    } catch (err) {
-      console.log(err);
-      toast.error(err?.data?.message);
-    }
+  const handleSubmit = async () => { 
+ 
   };
 
   // --- API INTEGRATION ENDS HERE ---
@@ -107,11 +74,10 @@ const DashboardPage = () => {
       <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-            Dashboard Overview
+            Admin Dashboard
           </h1>
           <p className="text-slate-500 mt-1 text-sm md:text-base">
-            Welcome back to Nessa's Broken World. Here's your creative universe
-            at a glance.
+            Welcome back! Here's what's happening with your marketplace.
           </p>
         </div>
         <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg border border-slate-200 shadow-sm text-xs font-medium text-slate-600 w-fit transition-all hover:shadow-md">
@@ -127,23 +93,23 @@ const DashboardPage = () => {
         ) : (
           <>
             <StatCard
-              title="Total Books"
-              value={globalStats?.totalBooks || 0}
+              title="Total Users"
+              value={globalStats?.totalBooks || 1230}
               Icon={BookOpen}
             />
             <StatCard
-              title="Total Characters"
-              value={globalStats?.totalCharacters || 0}
+              title="Active Listing"
+              value={globalStats?.totalCharacters || 600}
               Icon={Users}
             />
             <StatCard
-              title="Total Blogs"
-              value={globalStats?.totalBlogs || 0}
+              title="Total Orders"
+              value={globalStats?.totalBlogs || 250}
               Icon={FileText}
             />
             <StatCard
-              title="Total Themes"
-              value={globalStats?.totalThemes || 0}
+              title="Revenue"
+              value={globalStats?.totalThemes || "$2230"}
               Icon={Layout}
             />
           </>
@@ -153,33 +119,20 @@ const DashboardPage = () => {
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <IndependentChartCard
-          title="Books Overview"
+          title="Total User"
           type="book"
           dataKey="bookGrowth"
           chartType="area"
         />
         <IndependentChartCard
-          title="Blogs Overview"
+          title="Revenue Overview"
           type="blog"
           dataKey="blogGrowth"
           chartType="bar"
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-        <IndependentChartCard
-          title="Characters Overview"
-          type="character"
-          dataKey="characterGrowth"
-          chartType="area"
-        />
-        <IndependentChartCard
-          title="Themes Overview"
-          type="theme"
-          dataKey="themeGrowth"
-          chartType="bar"
-        />
-      </div>
+     
 
       {/* Hero Section Form */}
       {/* Hero Section Form */}
