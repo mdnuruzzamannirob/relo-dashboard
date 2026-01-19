@@ -212,7 +212,6 @@ const DashboardPage = () => {
               <button
                 type="button"
                 onClick={() => {
-                  // Reset to original data
                   setHeadline(heroBannerData?.data?.title || "");
                   setDescription(heroBannerData?.data?.description || "");
                   setPreviewUrl(heroBannerData?.data?.image || null);
@@ -239,8 +238,55 @@ const DashboardPage = () => {
 
 // ... Rest of your existing components (IndependentChartCard, StatCard, Skeletons) remain exactly the same
 const IndependentChartCard = ({ title, type, dataKey, chartType }) => {
+
+
+  const STATIC_DASHBOARD_DATA = {
+  2024: [
+    { month: "January", count: 120 },
+    { month: "February", count: 90 },
+    { month: "March", count: 150 },
+    { month: "April", count: 110 },
+    { month: "May", count: 170 },
+    { month: "June", count: 140 },
+    { month: "July", count: 180 },
+    { month: "August", count: 160 },
+    { month: "September", count: 130 },
+    { month: "October", count: 190 },
+    { month: "November", count: 200 },
+    { month: "December", count: 220 },
+  ],
+  2025: [
+    { month: "January", count: 100 },
+    { month: "February", count: 80 },
+    { month: "March", count: 140 },
+    { month: "April", count: 120 },
+    { month: "May", count: 160 },
+    { month: "June", count: 150 },
+    { month: "July", count: 170 },
+    { month: "August", count: 155 },
+    { month: "September", count: 145 },
+    { month: "October", count: 175 },
+    { month: "November", count: 185 },
+    { month: "December", count: 210 },
+  ],
+  2026: [
+    { month: "January", count: 130 },
+    { month: "February", count: 95 },
+    { month: "March", count: 160 },
+    { month: "April", count: 140 },
+    { month: "May", count: 180 },
+    { month: "June", count: 165 },
+    { month: "July", count: 190 },
+    { month: "August", count: 175 },
+    { month: "September", count: 155 },
+    { month: "October", count: 200 },
+    { month: "November", count: 215 },
+    { month: "December", count: 240 },
+  ],
+};
+
   const [year, setYear] = useState(2026);
-  const { data, isFetching } = useGetAdminDashboardStatsQuery({ type, year });
+  
 
   const startYear = 2024;
   const endYear = 2050;
@@ -250,7 +296,7 @@ const IndependentChartCard = ({ title, type, dataKey, chartType }) => {
   );
 
   const chartData =
-    data?.[dataKey]?.map((item) => ({
+    STATIC_DASHBOARD_DATA?.[dataKey]?.map((item) => ({
       name: item.month.substring(0, 3),
       count: item.count,
     })) || [];
@@ -286,9 +332,9 @@ const IndependentChartCard = ({ title, type, dataKey, chartType }) => {
       </div>
 
       <div className="h-64 w-full">
-        {isFetching ? (
+        {/* {isFetching ? (
           <SkeletonChart />
-        ) : (
+        ) : ( */}
           <ResponsiveContainer width="100%" height="100%">
             {chartType === "area" ? (
               <AreaChart data={chartData}>
@@ -372,7 +418,7 @@ const IndependentChartCard = ({ title, type, dataKey, chartType }) => {
               </BarChart>
             )}
           </ResponsiveContainer>
-        )}
+        {/* )} */}
       </div>
     </div>
   );

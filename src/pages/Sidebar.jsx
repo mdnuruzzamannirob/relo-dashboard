@@ -94,23 +94,27 @@ const Sidebar = ({ sidebarVisible, setSidebarVisible }) => {
             <SidebarItem
               to="/dashboard"
               icon={LuLayoutDashboard}
-              label="Dashboard"
+              label="Overview"
             />
-            <SidebarItem to="/books" icon={HiOutlineBookOpen} label="Books" />
             <SidebarItem
-              to="/characters"
+              to="/users"
               icon={LiaUserFriendsSolid}
-              label="Characters"
+              label="Users"
             />
             <SidebarItem
-              to="/blogs"
+              to="/products"
               icon={IoDocumentTextOutline}
-              label="Blogs"
+              label="Products"
             />
             <SidebarItem
-              to="/worldandthemes"
+              to="/orders"
               icon={MdOutlineCategory}
-              label="World & Themes"
+              label="Orders"
+            />
+            <SidebarItem
+              to="/category-locker"
+              icon={MdOutlineCategory}
+              label="Orders"
             />
             <li className="relative group/parent">
               <button className="w-full px-4 py-3 rounded-2xl flex items-center group transition-all text-white hover:bg-neutral-800">

@@ -1,4 +1,3 @@
-import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -11,15 +10,13 @@ import VerifyCodePage from "./pages/VerifyCodePage";
 import SetNewPasswordPage from "./pages/SetNewPasswordPage";
 import Layout from "./pages/Layout"; // Import Layout
 import DashboardPage from "./pages/Dashboard";
-import Books from "./pages/Books";
-import Characters from "./pages/Characters";
-import Blogs from "./pages/Blogs";
-import WorldAndThemes from "./pages/WorldAndThemes";
 import AccountSettings from "./pages/AccountSettings";
 import EditProfile from "./pages/EditProfile";
 import PrivacySettings from "./pages/PrivacySettings";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import { getCookie } from "./services/cookies";
+import UserManagement from "./pages/UserManagement";
+import ProductManagement from "./pages/ProductManagement/ProductManagement";
 function App() {
   const token = getCookie("NessasBrokenWorldAuthToken");
   return (
@@ -47,38 +44,25 @@ function App() {
             </Layout>
           }
         />
+      
         <Route
-          path="/books"
+          path="/users"
           element={
             <Layout>
-              <Books />
+              <UserManagement/>
             </Layout>
           }
         />
         <Route
-          path="/characters"
+          path="/products"
           element={
             <Layout>
-              <Characters />
+              <ProductManagement/>
             </Layout>
           }
         />
-        <Route
-          path="/blogs"
-          element={
-            <Layout>
-              <Blogs />
-            </Layout>
-          }
-        />
-        <Route
-          path="/worldandthemes"
-          element={
-            <Layout>
-              <WorldAndThemes />
-            </Layout>
-          }
-        />
+      
+       
         <Route
           path="/accountsettings"
           element={
