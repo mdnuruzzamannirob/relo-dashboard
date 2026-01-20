@@ -19,40 +19,18 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import {
-  useGetAdminDashboardStatsQuery,
-  useGetHeroBannerQuery,
-  useUpdateHeroBannerMutation,
-} from "../services/allApi";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-const DashboardPage = () => {
-  // Global stats fetch
-  const { data: globalStats, isLoading: isGlobalLoading } =
-    useGetAdminDashboardStatsQuery({
-      type: "book",
-      year: 2026,
-    });
 
-  // --- API INTEGRATION STARTS HERE ---
-  const { data: heroBannerData, isLoading: isHeroLoading } =
-    useGetHeroBannerQuery();
-  const [updateHeroBanner, { isLoading: isUpdating }] =
-    useUpdateHeroBannerMutation();
+const DashboardPage = () => {
+
+
+
 
   const [headline, setHeadline] = useState("");
   const [description, setDescription] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
 
-  // Pre-fill form when data is fetched
-  useEffect(() => {
-    if (heroBannerData?.data) {
-      setHeadline(heroBannerData.data.title || "");
-      setDescription(heroBannerData.data.description || "");
-      setPreviewUrl(heroBannerData.data.image || null);
-    }
-  }, [heroBannerData]);
+ 
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -88,32 +66,30 @@ const DashboardPage = () => {
 
       {/* Top Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        {isGlobalLoading ? (
-          [...Array(4)].map((_, i) => <SkeletonStatCard key={i} />)
-        ) : (
+        
+       
           <>
             <StatCard
               title="Total Users"
-              value={globalStats?.totalBooks || 1230}
+              value={1230}
               Icon={BookOpen}
             />
             <StatCard
               title="Active Listing"
-              value={globalStats?.totalCharacters || 600}
+              value={600}
               Icon={Users}
             />
             <StatCard
               title="Total Orders"
-              value={globalStats?.totalBlogs || 250}
+              value={250}
               Icon={FileText}
             />
             <StatCard
               title="Revenue"
-              value={globalStats?.totalThemes || "$2230"}
+              value={"$2230"}
               Icon={Layout}
             />
           </>
-        )}
       </div>
 
       {/* Charts Section */}
@@ -222,11 +198,9 @@ const DashboardPage = () => {
                 Discard
               </button>
               <button
-                onClick={handleSubmit}
-                disabled={isUpdating}
                 className="bg-slate-900 text-white px-10 py-3 rounded-xl font-semibold shadow-lg shadow-slate-200 hover:bg-slate-800 hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:bg-slate-400 disabled:cursor-not-allowed"
               >
-                {isUpdating ? "Publishing..." : "Publish Changes"}
+                Publish
               </button>
             </div>
           </div>

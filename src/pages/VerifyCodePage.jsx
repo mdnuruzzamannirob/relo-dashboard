@@ -1,7 +1,5 @@
 import React, { useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { toast } from "react-toastify";
-import { useVerifyOtpMutation, useResendOtpMutation } from "../services/allApi";
 import Text from "../components/Text";
 import Button from "../components/Button";
 
@@ -15,9 +13,7 @@ const VerifyCodePage = () => {
   const [code, setCode] = useState(["", "", "", "", "",""]);
   const inputRefs = useRef([]);
 
-  // API Hooks
-  const [verifyOtp, { isLoading: isVerifying }] = useVerifyOtpMutation();
-  const [resendOtp, { isLoading: isResending }] = useResendOtpMutation();
+  
 
   const handleInputChange = (value, index) => {
     if (isNaN(value)) return;
@@ -49,47 +45,8 @@ const VerifyCodePage = () => {
     const nextIndex = data.length < 6 ? data.length : 5;
     inputRefs.current[nextIndex].focus();
   };
-  const handleSubmit = async (e) => {
-    if (e) e.preventDefault();
-
-    const codeString = code.join(""); // Joins "12345"
-
-    if (codeString.length !== 6) {
-      toast.error("Please enter all 5 digits");
-      return;
-    }
 
 
-    const otpAsNumber = Number(codeString);
-
-    try {
-      await verifyOtp({
-        email: email,
-        verificationCode: otpAsNumber, 
-      }).unwrap();
-
-      toast.success("Verification successful!");
-      navigate("/setNewPassword", {
-        state: { email, verificationCode: otpAsNumber },
-      });
-    } catch (err) {
-      toast.error(err?.data?.message || "Invalid or expired code");
-    }
-  };
-  const handleResend = async (e) => {
-    e.preventDefault();
-    if (!email) {
-      toast.error("Email not found. Please go back and try again.");
-      return;
-    }
-
-    try {
-      await resendOtp({ email }).unwrap();
-      toast.success("Verification code resent!");
-    } catch (err) {
-      toast.error(err?.data?.message || "Failed to resend code.");
-    }
-  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-slate-50 px-4">
@@ -123,20 +80,16 @@ const VerifyCodePage = () => {
 
         <Button
           buttonText="Verify Code"
-          handleSubmit={handleSubmit}
-          loading={isVerifying}
         />
 
         <p className="text-center mt-6 text-gray-600">
           You have not received the email?{" "}
           <button
-            onClick={handleResend}
-            disabled={isResending}
             className={`text-sm font-medium ${
               isResending ? "text-gray-400" : "text-green-500 hover:underline"
             } bg-transparent border-none cursor-pointer`}
           >
-            {isResending ? "Sending..." : "Resend"}
+            Resend
           </button>
         </p>
       </div>

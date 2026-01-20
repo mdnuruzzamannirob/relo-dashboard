@@ -3,25 +3,13 @@ import { CheckCircle2 } from "lucide-react";
 import { toast } from "react-toastify";
 import TextEditor from "../components/TextEditor";
 import { LegalSkeleton } from "../components/shimmer/LegalSkeleton";
-import {
-  useGetTermsConditionsQuery,
-  useCreateTermsConditionsMutation,
-  useUpdateTermsConditionsMutation,
-} from "../services/allApi";
+
 
 export default function TermsConditionsManagement() {
   const [content, setContent] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // --- API HOOKS ---
-  const { data, isLoading, refetch } = useGetTermsConditionsQuery();
-  const [createTerms, { isLoading: isCreating }] =
-    useCreateTermsConditionsMutation();
-  const [updateTerms, { isLoading: isUpdating }] =
-    useUpdateTermsConditionsMutation();
-
-  const isSaving = isCreating || isUpdating;
-
+  
   // Sync server data to the editor state on load
   useEffect(() => {
     if (data?.data?.content) {

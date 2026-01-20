@@ -3,25 +3,14 @@ import { CheckCircle2 } from "lucide-react";
 import { toast } from "react-toastify";
 import TextEditor from "../components/TextEditor";
 import { LegalSkeleton } from "../components/shimmer/LegalSkeleton";
-import {
-  useGetPrivacyPolicyQuery,
-  useCreatePrivacyPolicyMutation,
-  useUpdatePrivacyPolicyMutation,
-} from "../services/allApi";
+
 
 export default function PrivacyPolicyManagement() {
   const [content, setContent] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // --- API HOOKS ---
-  const { data, isLoading, refetch } = useGetPrivacyPolicyQuery();
-  const [createPrivacy, { isLoading: isCreating }] =
-    useCreatePrivacyPolicyMutation();
-  const [updatePrivacy, { isLoading: isUpdating }] =
-    useUpdatePrivacyPolicyMutation();
 
-  const isSaving = isCreating || isUpdating;
-
+ 
   // Sync data from API to state
   useEffect(() => {
     if (data?.data?.content) {

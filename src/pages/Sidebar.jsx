@@ -1,7 +1,5 @@
-import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaBars, FaSignOutAlt, FaChevronRight } from "react-icons/fa";
-import logo from "../assets/FF_city_Logo 1.svg";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { HiOutlineBookOpen } from "react-icons/hi";
 import { LiaUserFriendsSolid } from "react-icons/lia";
@@ -12,28 +10,13 @@ import { CiCircleInfo } from "react-icons/ci";
 import { MdOutlinePrivacyTip } from "react-icons/md";
 import { FaRegNewspaper } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
-import { useLogoutMutation } from "../services/allApi";
-import { deleteCookie } from "../services/cookies";
-import { toast } from "react-toastify";
 
 const Sidebar = ({ sidebarVisible, setSidebarVisible }) => {
   const navigate = useNavigate();
-  const [logout, { isLoading }] = useLogoutMutation();
 
   const toggleSidebar = () => setSidebarVisible(!sidebarVisible);
 
-  const handleLogout = async () => {
-    try {
-      const res = await logout().unwrap();
-      deleteCookie("NessasBrokenWorldAuthToken");
-      localStorage.removeItem("user");
-      toast.success(res?.message);
-      navigate("/login");
-    } catch (err) {
-      toast.error(err?.data?.message);
-    }
-  };
-
+ 
   const SidebarItem = ({ to, icon: Icon, label }) => (
     <li>
       <NavLink
@@ -171,20 +154,18 @@ const Sidebar = ({ sidebarVisible, setSidebarVisible }) => {
       <div className="mt-auto pt-4 border-t border-neutral-800">
         {sidebarVisible ? (
           <button
-            onClick={handleLogout}
-            disabled={isLoading}
+            
             className="w-full px-4 py-3 rounded-2xl text-neutral-400 hover:text-white hover:bg-neutral-800 flex items-center transition-all disabled:opacity-50"
           >
             <FaSignOutAlt className="mr-3 size-5" />
             <span className="font-medium">
-              {isLoading ? "Logging out..." : "Log out"}
+              Log Out
             </span>
           </button>
         ) : (
           <div className="flex justify-center pb-4">
             <FaSignOutAlt
               className="size-6 text-neutral-500 hover:text-red-400 cursor-pointer"
-              onClick={handleLogout}
             />
           </div>
         )}

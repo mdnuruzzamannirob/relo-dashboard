@@ -14,20 +14,16 @@ import AccountSettings from "./pages/AccountSettings";
 import EditProfile from "./pages/EditProfile";
 import PrivacySettings from "./pages/PrivacySettings";
 import TermsAndConditions from "./pages/TermsAndConditions";
-import { getCookie } from "./services/cookies";
 import UserManagement from "./pages/UserManagement";
 import ProductManagement from "./pages/ProductManagement/ProductManagement";
+import Order from "./pages/Order/Order";
 function App() {
-  const token = getCookie("NessasBrokenWorldAuthToken");
   return (
     <Router>
       <Routes>
         <Route
           path="/"
-          element={
-            token ? <Navigate to="/dashboard" /> : <Navigate to="/login" />
-          }
-        />
+          element={ <Navigate to="/login" />} />
 
         {/* Routes without Sidebar */}
         <Route path="/login" element={<LoginPage />} />
@@ -58,6 +54,15 @@ function App() {
           element={
             <Layout>
               <ProductManagement/>
+            </Layout>
+          }
+        />
+      
+        <Route
+          path="/orders"
+          element={
+            <Layout>
+              <Order/>
             </Layout>
           }
         />

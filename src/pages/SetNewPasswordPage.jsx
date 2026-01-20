@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useChangePasswordMutation } from "../services/allApi"; // Import hook
 import Text from "../components/Text";
 import Inputbox from "../components/InputBox";
 import Button from "../components/Button";
@@ -20,7 +19,6 @@ const SetNewPasswordPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // API Mutation
   const [changePassword, { isLoading }] = useChangePasswordMutation();
 
   const handleSubmit = async (e) => {

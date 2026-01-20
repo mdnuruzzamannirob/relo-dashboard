@@ -3,23 +3,12 @@ import { CheckCircle2, AlertCircle } from "lucide-react";
 import { toast } from "react-toastify";
 import TextEditor from "../components/TextEditor";
 import { LegalSkeleton } from "../components/shimmer/LegalSkeleton";
-// Import your hooks from your api slice
-import {
-  useGetAboutUsQuery,
-  useCreateAboutUsMutation,
-  useUpdateAboutUsMutation,
-} from "../services/allApi";
 
 export default function AboutUsManagement() {
   const [content, setContent] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // --- API HOOKS ---
-  const { data, isLoading, refetch } = useGetAboutUsQuery();
-  const [createAboutUs, { isLoading: isCreating }] = useCreateAboutUsMutation();
-  const [updateAboutUs, { isLoading: isUpdating }] = useUpdateAboutUsMutation();
 
-  const isSaving = isCreating || isUpdating;
 
   // Sync server data to local state when page loads
   useEffect(() => {
