@@ -1,22 +1,20 @@
-import React from 'react'
 
 const OrderCard = ({order}) => {
-    console.log(order?.buyer?.avatar)
   return (
-    <div className="border rounded-xl p-4 bg-white shadow-sm flex flex-col gap-4">
+    <div className="border rounded-xl p-4 bg-white shadow-sm flex flex-col gap-4 mb-5">
         
         {/* Top Section */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <img
-              src={order?.buyer?.avatar}
+              src={order?.product?.image}
               alt="Product"
-              className="w-12 h-12 rounded-lg object-cover"
+              className="w-32 h-16 rounded-lg object-cover"
             />
 
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-gray-900">Woman Bag</h3>
+                <h3 className="font-semibold text-gray-900">{order?.product?.name}</h3>
                 <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-600">
                   Completed
                 </span>
@@ -52,7 +50,7 @@ const OrderCard = ({order}) => {
             <p className="text-xs text-gray-500 mb-2">Seller</p>
             <div className="flex items-center gap-2">
               <img
-                src="https://via.placeholder.com/32"
+                src={order?.seller?.avatar}
                 alt="Seller"
                 className="w-8 h-8 rounded-full"
               />

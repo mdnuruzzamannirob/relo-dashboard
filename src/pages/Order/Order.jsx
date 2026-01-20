@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import OrderCard from "../../components/OrderCard/OrderCard";
 import user from "../../assets/images/user.png"
 import user2 from "../../assets/images/user1.png"
+import product from "../../assets/images/product2.png"
 
 const Order = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -13,7 +14,32 @@ const Order = () => {
             "status": "Completed",
             "product": {
                 "name": "Woman Bag",
-                "image": user,
+                "image": product,
+                "price": 120.00
+            },
+            "buyer": {
+                "name": "John Smith",
+                "avatar": user
+            },
+            "seller": {
+                "name": "Emma Wilson",
+                "avatar": user2
+            },
+            "dates": {
+                "orderDate": "2024-01-10",
+                "completedDate": "2024-01-12"
+            },
+            "locker": {
+                "location": "Locker A-12"
+            },
+            "currency": "USD"
+        },
+        {
+            "orderId": "#I5FHM",
+            "status": "Completed",
+            "product": {
+                "name": "Woman Bag",
+                "image": product,
                 "price": 120.00
             },
             "buyer": {
@@ -42,10 +68,10 @@ const Order = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-                        Users Management
+                        Order Management
                     </h1>
                     <p className="text-gray-500 mt-1">
-                        Manage and monitor all platform users
+                        Monitor all transactions and pickups
                     </p>
                 </div>
 
@@ -62,7 +88,7 @@ const Order = () => {
                     </div>
                     <input
                         type="text"
-                        placeholder="Search by user..."
+                        placeholder="Search by product name..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="block w-full pl-12 pr-4 py-2 bg-[#E8ECEF] border-2 border-transparent focus:border-slate-200 focus:bg-white rounded-2xl transition-all outline-none"
@@ -70,13 +96,16 @@ const Order = () => {
                 </div>
                 <div className="flex gap-5">
                     <button className="bg-[#1A435C] text-white whitespace-nowrap px-4 py-2 rounded-lg">
-                        All Users
+                        All
                     </button>
                     <button className="bg-[#E8ECEF] text-slate-700 whitespace-nowrap px-4 py-2 rounded-lg">
-                        Active
+                        Processing
                     </button>
                     <button className="bg-[#E8ECEF] text-slate-700 whitespace-nowrap px-4 py-2 rounded-lg">
-                        Suspended
+                        Ready
+                    </button>
+                    <button className="bg-[#E8ECEF] text-slate-700 whitespace-nowrap px-4 py-2 rounded-lg">
+                        Completed
                     </button>
                 </div>
 
