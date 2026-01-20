@@ -17,6 +17,9 @@ import TermsAndConditions from "./pages/TermsAndConditions";
 import UserManagement from "./pages/UserManagement";
 import ProductManagement from "./pages/ProductManagement/ProductManagement";
 import Order from "./pages/Order/Order";
+import PaymentManagement from "./pages/PaymentManagement/PaymentManagement";
+import CategoryLocker from "./pages/CategoryLocker/CategoryLocker";
+import MessagePage from "./pages/MessagePage/messagePage";
 function App() {
   return (
     <Router>
@@ -63,6 +66,31 @@ function App() {
           element={
             <Layout>
               <Order/>
+            </Layout>
+          }
+        />
+        <Route
+          path="/category-locker"
+          element={
+            <Layout>
+              <CategoryLocker/>
+            </Layout>
+          }
+        />
+        <Route
+          path="/message"
+          element={
+            <Layout>
+              <MessagePage/>
+            </Layout>
+          }
+        />
+      
+        <Route
+          path="/payment-management"
+          element={
+            <Layout>
+              <PaymentManagement/>
             </Layout>
           }
         />

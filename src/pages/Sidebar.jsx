@@ -4,12 +4,14 @@ import { LuLayoutDashboard } from "react-icons/lu";
 import { HiOutlineBookOpen } from "react-icons/hi";
 import { LiaUserFriendsSolid } from "react-icons/lia";
 import { IoDocumentTextOutline } from "react-icons/io5";
-import { MdOutlineCategory } from "react-icons/md";
 import { IoSettingsOutline } from "react-icons/io5";
 import { CiCircleInfo } from "react-icons/ci";
 import { MdOutlinePrivacyTip } from "react-icons/md";
 import { FaRegNewspaper } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
+import { BiCategory } from "react-icons/bi";
+import { FiShoppingBag } from "react-icons/fi";
+import { AiOutlineDollarCircle } from "react-icons/ai";
 
 const Sidebar = ({ sidebarVisible, setSidebarVisible }) => {
   const navigate = useNavigate();
@@ -91,13 +93,24 @@ const Sidebar = ({ sidebarVisible, setSidebarVisible }) => {
             />
             <SidebarItem
               to="/orders"
-              icon={MdOutlineCategory}
+              icon={FiShoppingBag}
               label="Orders"
             />
             <SidebarItem
               to="/category-locker"
-              icon={MdOutlineCategory}
-              label="Orders"
+              icon={BiCategory}
+              label="Category & Locker"
+            />
+           
+            <SidebarItem
+              to="/payment-management"
+              icon={AiOutlineDollarCircle}
+              label="Payment Management"
+            />
+             <SidebarItem
+              to="/message"
+              icon={BiCategory}
+              label="Message"
             />
             <li className="relative group/parent">
               <button className="w-full px-4 py-3 rounded-2xl flex items-center group transition-all text-white hover:bg-neutral-800">
