@@ -19,18 +19,13 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import RecentOrdersTable from "../components/RecentOrderTable/RecentOrderTable";
 
 const DashboardPage = () => {
 
 
 
 
-  const [headline, setHeadline] = useState("");
-  const [description, setDescription] = useState("");
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
-
- 
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -40,8 +35,8 @@ const DashboardPage = () => {
     }
   };
 
-  const handleSubmit = async () => { 
- 
+  const handleSubmit = async () => {
+
   };
 
   // --- API INTEGRATION ENDS HERE ---
@@ -66,30 +61,30 @@ const DashboardPage = () => {
 
       {/* Top Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        
-       
-          <>
-            <StatCard
-              title="Total Users"
-              value={1230}
-              Icon={BookOpen}
-            />
-            <StatCard
-              title="Active Listing"
-              value={600}
-              Icon={Users}
-            />
-            <StatCard
-              title="Total Orders"
-              value={250}
-              Icon={FileText}
-            />
-            <StatCard
-              title="Revenue"
-              value={"$2230"}
-              Icon={Layout}
-            />
-          </>
+
+
+        <>
+          <StatCard
+            title="Total Users"
+            value={1230}
+            Icon={BookOpen}
+          />
+          <StatCard
+            title="Active Listing"
+            value={600}
+            Icon={Users}
+          />
+          <StatCard
+            title="Total Orders"
+            value={250}
+            Icon={FileText}
+          />
+          <StatCard
+            title="Revenue"
+            value={"$2230"}
+            Icon={Layout}
+          />
+        </>
       </div>
 
       {/* Charts Section */}
@@ -108,104 +103,9 @@ const DashboardPage = () => {
         />
       </div>
 
-     
 
-      {/* Hero Section Form */}
-      {/* Hero Section Form */}
-      <section className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all hover:shadow-md">
-        <div className="border-b border-slate-100 p-6 bg-slate-50/50">
-          <h2 className="text-xl font-bold text-slate-800">Hero Section</h2>
-          <p className="text-sm text-slate-500">
-            Update the main landing area of your creative universe.
-          </p>
-        </div>
-        <div className="p-8">
-          <div className="w-full space-y-6">
-            <div className="w-full">
-              <label className="block text-sm font-semibold mb-2 text-slate-700">
-                Headline Title
-              </label>
-              <input
-                type="text"
-                value={headline}
-                onChange={(e) => setHeadline(e.target.value)}
-                placeholder="e.g., Welcome to the Broken World"
-                className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 focus:bg-white transition-all placeholder:text-slate-400"
-              />
-            </div>
-            <div className="w-full">
-              <label className="block text-sm font-semibold mb-2 text-slate-700">
-                Description
-              </label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Briefly describe your universe..."
-                className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl h-32 resize-none focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 focus:bg-white transition-all placeholder:text-slate-400"
-              />
-            </div>
+      <RecentOrdersTable />
 
-            <div className="w-full">
-              <label className="block text-sm font-semibold mb-2 text-slate-700">
-                Cover Image
-              </label>
-              <div className="group relative border-2 border-dashed border-slate-200 rounded-2xl min-h-50 transition-all hover:border-slate-400 hover:bg-slate-50/50 flex flex-col items-center justify-center cursor-pointer overflow-hidden">
-                {/* PREVIEW LOGIC: Show selected file OR existing API image */}
-                {previewUrl ? (
-                  <div className="absolute inset-0 w-full h-full">
-                    <img
-                      src={previewUrl}
-                      alt="Hero Preview"
-                      className="w-full h-full object-cover opacity-30 transition-opacity group-hover:opacity-20"
-                    />
-                  </div>
-                ) : null}
-
-                <div className="relative z-10 flex flex-col items-center p-8">
-                  <div className="p-4 bg-white rounded-full shadow-sm mb-4 group-hover:scale-110 group-hover:shadow-md transition-all">
-                    <Upload size={24} className="text-slate-600" />
-                  </div>
-                  <p className="text-sm text-slate-600 font-medium">
-                    {selectedFile
-                      ? selectedFile.name
-                      : "Click to change hero image"}
-                  </p>
-                  <p className="text-xs text-slate-400 mt-1">
-                    PNG, JPG, or WEBP up to 10MB
-                  </p>
-                </div>
-
-                <input
-                  type="file"
-                  onChange={handleFileChange}
-                  accept="image/*"
-                  className="absolute inset-0 opacity-0 cursor-pointer z-20"
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-end gap-4 pt-6">
-              <button
-                type="button"
-                onClick={() => {
-                  setHeadline(heroBannerData?.data?.title || "");
-                  setDescription(heroBannerData?.data?.description || "");
-                  setPreviewUrl(heroBannerData?.data?.image || null);
-                  setSelectedFile(null);
-                }}
-                className="px-6 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors"
-              >
-                Discard
-              </button>
-              <button
-                className="bg-slate-900 text-white px-10 py-3 rounded-xl font-semibold shadow-lg shadow-slate-200 hover:bg-slate-800 hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:bg-slate-400 disabled:cursor-not-allowed"
-              >
-                Publish
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 };
@@ -215,52 +115,52 @@ const IndependentChartCard = ({ title, type, dataKey, chartType }) => {
 
 
   const STATIC_DASHBOARD_DATA = {
-  2024: [
-    { month: "January", count: 120 },
-    { month: "February", count: 90 },
-    { month: "March", count: 150 },
-    { month: "April", count: 110 },
-    { month: "May", count: 170 },
-    { month: "June", count: 140 },
-    { month: "July", count: 180 },
-    { month: "August", count: 160 },
-    { month: "September", count: 130 },
-    { month: "October", count: 190 },
-    { month: "November", count: 200 },
-    { month: "December", count: 220 },
-  ],
-  2025: [
-    { month: "January", count: 100 },
-    { month: "February", count: 80 },
-    { month: "March", count: 140 },
-    { month: "April", count: 120 },
-    { month: "May", count: 160 },
-    { month: "June", count: 150 },
-    { month: "July", count: 170 },
-    { month: "August", count: 155 },
-    { month: "September", count: 145 },
-    { month: "October", count: 175 },
-    { month: "November", count: 185 },
-    { month: "December", count: 210 },
-  ],
-  2026: [
-    { month: "January", count: 130 },
-    { month: "February", count: 95 },
-    { month: "March", count: 160 },
-    { month: "April", count: 140 },
-    { month: "May", count: 180 },
-    { month: "June", count: 165 },
-    { month: "July", count: 190 },
-    { month: "August", count: 175 },
-    { month: "September", count: 155 },
-    { month: "October", count: 200 },
-    { month: "November", count: 215 },
-    { month: "December", count: 240 },
-  ],
-};
+    2024: [
+      { month: "January", count: 120 },
+      { month: "February", count: 90 },
+      { month: "March", count: 150 },
+      { month: "April", count: 110 },
+      { month: "May", count: 170 },
+      { month: "June", count: 140 },
+      { month: "July", count: 180 },
+      { month: "August", count: 160 },
+      { month: "September", count: 130 },
+      { month: "October", count: 190 },
+      { month: "November", count: 200 },
+      { month: "December", count: 220 },
+    ],
+    2025: [
+      { month: "January", count: 100 },
+      { month: "February", count: 80 },
+      { month: "March", count: 140 },
+      { month: "April", count: 120 },
+      { month: "May", count: 160 },
+      { month: "June", count: 150 },
+      { month: "July", count: 170 },
+      { month: "August", count: 155 },
+      { month: "September", count: 145 },
+      { month: "October", count: 175 },
+      { month: "November", count: 185 },
+      { month: "December", count: 210 },
+    ],
+    2026: [
+      { month: "January", count: 130 },
+      { month: "February", count: 95 },
+      { month: "March", count: 160 },
+      { month: "April", count: 140 },
+      { month: "May", count: 180 },
+      { month: "June", count: 165 },
+      { month: "July", count: 190 },
+      { month: "August", count: 175 },
+      { month: "September", count: 155 },
+      { month: "October", count: 200 },
+      { month: "November", count: 215 },
+      { month: "December", count: 240 },
+    ],
+  };
 
   const [year, setYear] = useState(2026);
-  
+
 
   const startYear = 2024;
   const endYear = 2050;
@@ -269,8 +169,10 @@ const IndependentChartCard = ({ title, type, dataKey, chartType }) => {
     (_, i) => startYear + i,
   );
 
+
+
   const chartData =
-    STATIC_DASHBOARD_DATA?.[dataKey]?.map((item) => ({
+    STATIC_DASHBOARD_DATA?.[year]?.map((item) => ({
       name: item.month.substring(0, 3),
       count: item.count,
     })) || [];
@@ -309,91 +211,93 @@ const IndependentChartCard = ({ title, type, dataKey, chartType }) => {
         {/* {isFetching ? (
           <SkeletonChart />
         ) : ( */}
-          <ResponsiveContainer width="100%" height="100%">
-            {chartType === "area" ? (
-              <AreaChart data={chartData}>
-                <defs>
-                  <linearGradient
-                    id={`color${type}`}
-                    x1="0"
-                    y1="0"
-                    x2="0"
-                    y2="1"
-                  >
-                    <stop offset="5%" stopColor="#0f172a" stopOpacity={0.08} />
-                    <stop offset="95%" stopColor="#0f172a" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid
-                  vertical={false}
-                  strokeDasharray="3 3"
-                  stroke="#f1f5f9"
-                />
-                <XAxis
-                  dataKey="name"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: "#94a3b8" }}
-                  dy={10}
-                />
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: "#94a3b8" }}
-                />
-                <Tooltip
-                  contentStyle={{
-                    borderRadius: "12px",
-                    border: "none",
-                    boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
-                  }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="count"
-                  stroke="#0f172a"
-                  strokeWidth={3}
-                  fill={`url(#color${type})`}
-                />
-              </AreaChart>
-            ) : (
-              <BarChart data={chartData}>
-                <CartesianGrid
-                  vertical={false}
-                  strokeDasharray="3 3"
-                  stroke="#f1f5f9"
-                />
-                <XAxis
-                  dataKey="name"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: "#94a3b8" }}
-                  dy={10}
-                />
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: "#94a3b8" }}
-                />
-                <Tooltip
-                  cursor={{ fill: "#f8fafc" }}
-                  contentStyle={{
-                    borderRadius: "12px",
-                    border: "none",
-                    boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
-                  }}
-                />
-                <Bar
-                  dataKey="count"
-                  fill="#0f172a"
-                  radius={[4, 4, 0, 0]}
-                  barSize={12}
-                />
-              </BarChart>
-            )}
-          </ResponsiveContainer>
+        <ResponsiveContainer width="100%" height="100%">
+          {chartType === "area" ? (
+            <AreaChart data={chartData}>
+              <defs>
+                <linearGradient
+                  id={`color${type}`}
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop offset="5%" stopColor="#0f172a" stopOpacity={0.08} />
+                  <stop offset="95%" stopColor="#0f172a" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid
+                vertical={false}
+                strokeDasharray="3 3"
+                stroke="#f1f5f9"
+              />
+              <XAxis
+                dataKey="name"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: "#94a3b8" }}
+                dy={10}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: "#94a3b8" }}
+              />
+              <Tooltip
+                contentStyle={{
+                  borderRadius: "12px",
+                  border: "none",
+                  boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
+                }}
+              />
+              <Area
+                type="monotone"
+                dataKey="count"
+                stroke="#0f172a"
+                strokeWidth={3}
+                fill={`url(#color${type})`}
+              />
+            </AreaChart>
+          ) : (
+            <BarChart data={chartData}>
+              <CartesianGrid
+                vertical={false}
+                strokeDasharray="3 3"
+                stroke="#f1f5f9"
+              />
+              <XAxis
+                dataKey="name"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: "#94a3b8" }}
+                dy={10}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: "#94a3b8" }}
+              />
+              <Tooltip
+                cursor={{ fill: "#f8fafc" }}
+                contentStyle={{
+                  borderRadius: "12px",
+                  border: "none",
+                  boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
+                }}
+              />
+              <Bar
+                dataKey="count"
+                fill="#0f172a"
+                radius={[4, 4, 0, 0]}
+                barSize={12}
+              />
+            </BarChart>
+          )}
+        </ResponsiveContainer>
         {/* )} */}
+
       </div>
+
     </div>
   );
 };
