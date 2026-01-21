@@ -11,11 +11,7 @@ export default function AboutUsManagement() {
 
 
   // Sync server data to local state when page loads
-  useEffect(() => {
-    if (data?.data?.content) {
-      setContent(data.data.content);
-    }
-  }, [data]);
+
 
   // --- HANDLER ---
   const handleSave = async () => {
@@ -38,9 +34,9 @@ export default function AboutUsManagement() {
     }
   };
 
-  if (isLoading) {
-    return <LegalSkeleton />;
-  }
+  // if (isLoading) {
+  //   return <LegalSkeleton />;
+  // }
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center p-6 md:p-12 font-sans text-slate-800">
@@ -74,15 +70,12 @@ export default function AboutUsManagement() {
         {/* Save Action */}
         <div className="w-full">
           <button
-            onClick={handleSave}
-            disabled={isSaving}
             className={`w-full py-4 rounded-2xl font-bold text-lg shadow-xl transition-all active:scale-[0.98] tracking-wide ${
-              isSaving
-                ? "bg-slate-400 cursor-not-allowed text-white"
-                : "bg-[#1e293b] text-white hover:bg-slate-800 shadow-slate-200"
+            
+                 "bg-[#1e293b] text-white hover:bg-slate-800 shadow-slate-200"
             }`}
           >
-            {isSaving ? "Saving..." : "Save Changes"}
+            Save Changes
           </button>
         </div>
       </div>

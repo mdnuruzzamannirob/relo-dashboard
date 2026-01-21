@@ -70,6 +70,7 @@ const CategoryLocker = () => {
               {
                 title: 'Action',
                 key: 'action',
+                align: 'center',
                 className: 'text-center',
                 render: (_, record) => (
                   <Space size="middle">
@@ -111,10 +112,12 @@ const CategoryLocker = () => {
                 title: 'Action',
                 key: 'action',
                 render: (_, record) => (
-                  <Space size="middle">
-                    <Button type="primary" icon={<EditOutlined />} />
+                   <Space size="middle">
+                    <button type="primary" className="bg-[#1A435C] text-white px-2 py-1 cursor-pointer rounded-md">
+                      <EditOutlined />
+                    </button>
                     <Popconfirm
-                      title="Are you sure delete this locker address?"
+                      title="Are you sure delete this category?"
                       onConfirm={() => message.success('Delete successfully')}
                       okText="Yes"
                       cancelText="No"

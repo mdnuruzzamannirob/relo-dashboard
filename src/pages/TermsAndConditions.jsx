@@ -11,39 +11,39 @@ export default function TermsConditionsManagement() {
 
   
   // Sync server data to the editor state on load
-  useEffect(() => {
-    if (data?.data?.content) {
-      setContent(data.data.content);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data?.data?.content) {
+  //     setContent(data.data.content);
+  //   }
+  // }, [data]);
 
   // --- HANDLER ---
-  const handleSave = async () => {
-    try {
-      if (data?.data) {
-        // If the record exists, perform an UPDATE
-        await updateTerms({ content }).unwrap();
-      } else {
-        // If no record exists, perform a CREATE
-        await createTerms({ content }).unwrap();
-      }
+  // const handleSave = async () => {
+  //   try {
+  //     if (data?.data) {
+  //       // If the record exists, perform an UPDATE
+  //       await updateTerms({ content }).unwrap();
+  //     } else {
+  //       // If no record exists, perform a CREATE
+  //       await createTerms({ content }).unwrap();
+  //     }
 
-      // Success Feedback Logic
-      setShowSuccess(true);
-      refetch(); // Manually refresh data since tags aren't used
-      toast.success("Terms & Conditions saved successfully");
+  //     // Success Feedback Logic
+  //     setShowSuccess(true);
+  //     refetch(); // Manually refresh data since tags aren't used
+  //     toast.success("Terms & Conditions saved successfully");
 
-      // Hide success banner after 3 seconds
-      setTimeout(() => setShowSuccess(false), 3000);
-    } catch (err) {
-      toast.error(err?.data?.message || "Failed to save changes");
-    }
-  };
+  //     // Hide success banner after 3 seconds
+  //     setTimeout(() => setShowSuccess(false), 3000);
+  //   } catch (err) {
+  //     toast.error(err?.data?.message || "Failed to save changes");
+  //   }
+  // };
 
   // --- LOADING STATE (SHIMMER) ---
-  if (isLoading) {
-    return <LegalSkeleton />;
-  }
+  // if (isLoading) {
+  //   return <LegalSkeleton />;
+  // }
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center p-6 md:p-12 font-sans text-slate-800">
@@ -79,15 +79,12 @@ export default function TermsConditionsManagement() {
 
         {/* Save Button */}
         <button
-          onClick={handleSave}
-          disabled={isSaving}
+          
           className={`w-full mt-6 py-4 rounded-2xl font-bold text-lg shadow-lg transition-all active:scale-[0.99] ${
-            isSaving
-              ? "bg-slate-400 cursor-not-allowed text-white"
-              : "bg-[#1e293b] text-white hover:bg-slate-800"
+             "bg-[#1e293b] text-white hover:bg-slate-800"
           }`}
         >
-          {isSaving ? "Saving..." : "Save Terms & Conditions"}
+          Save Terms & Conditions
         </button>
       </div>
     </div>
