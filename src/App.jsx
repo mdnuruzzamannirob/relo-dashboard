@@ -24,9 +24,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route
-          path="/"
-          element={ <Navigate to="/login" />} />
+        <Route path="/" element={<Navigate to="/login" />} />
 
         {/* Routes without Sidebar */}
         <Route path="/login" element={<LoginPage />} />
@@ -43,12 +41,12 @@ function App() {
             </Layout>
           }
         />
-      
+
         <Route
           path="/users"
           element={
             <Layout>
-              <UserManagement/>
+              <UserManagement />
             </Layout>
           }
         />
@@ -56,16 +54,16 @@ function App() {
           path="/products"
           element={
             <Layout>
-              <ProductManagement/>
+              <ProductManagement />
             </Layout>
           }
         />
-      
+
         <Route
           path="/orders"
           element={
             <Layout>
-              <Order/>
+              <Order />
             </Layout>
           }
         />
@@ -73,7 +71,7 @@ function App() {
           path="/category-locker"
           element={
             <Layout>
-              <CategoryLocker/>
+              <CategoryLocker />
             </Layout>
           }
         />
@@ -81,21 +79,20 @@ function App() {
           path="/message"
           element={
             <Layout>
-              <MessagePage/>
+              <MessagePage />
             </Layout>
           }
         />
-      
+
         <Route
           path="/payment-management"
           element={
             <Layout>
-              <PaymentManagement/>
+              <PaymentManagement />
             </Layout>
           }
         />
-      
-       
+
         <Route
           path="/accountsettings"
           element={
