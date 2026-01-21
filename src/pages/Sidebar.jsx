@@ -54,27 +54,11 @@ const Sidebar = ({ sidebarVisible, setSidebarVisible }) => {
             <p className="text-xs">Cayman Resellers</p>
           </div>
         )}
-        <div
-          className={
-            sidebarVisible
-              ? ""
-              : "absolute inset-0 flex justify-center items-center m-3"
-          }
-        >
-          <button
-            onClick={toggleSidebar}
-            className={`${sidebarVisible
-                ? "h-full"
-                : "h-14 w-10 flex items-center justify-center border-neutral-800 shadow-xl"
-              } text-white focus:outline-none transition-all duration-300 hover:bg-neutral-900 rounded-lg`}
-          >
-            <FaBars className="w-5 h-5" />
-          </button>
-        </div>
+       
       </div>
 
       <nav className="flex-1 overflow-y-auto no-scrollbar">
-        {sidebarVisible ? (
+        
           <ul className="space-y-2">
             <SidebarItem
               to="/dashboard"
@@ -142,26 +126,7 @@ const Sidebar = ({ sidebarVisible, setSidebarVisible }) => {
               </ul>
             </li>
           </ul>
-        ) : (
-          <div className="flex flex-col items-center space-y-8 mt-4">
-            <LuLayoutDashboard
-              className="size-6 text-neutral-500 hover:text-white cursor-pointer"
-              onClick={() => navigate("/dashboard")}
-            />
-            <HiOutlineBookOpen
-              className="size-6 text-neutral-500 hover:text-white cursor-pointer"
-              onClick={() => navigate("/books")}
-            />
-            <LiaUserFriendsSolid
-              className="size-6 text-neutral-500 hover:text-white cursor-pointer"
-              onClick={() => navigate("/characters")}
-            />
-            <IoSettingsOutline
-              className="size-6 text-neutral-500 hover:text-white cursor-pointer"
-              onClick={toggleSidebar}
-            />
-          </div>
-        )}
+        
       </nav>
 
       <div className="mt-auto pt-4 border-t border-neutral-800">
