@@ -19,7 +19,7 @@ import ProductManagement from "./pages/ProductManagement/ProductManagement";
 import Order from "./pages/Order/Order";
 import PaymentManagement from "./pages/PaymentManagement/PaymentManagement";
 import CategoryLocker from "./pages/CategoryLocker/CategoryLocker";
-import MessagePage from "./pages/MessagePage/messagePage";
+import MessagePage from "./pages/MessagePage/MessagePage";
 function App() {
   return (
     <Router>

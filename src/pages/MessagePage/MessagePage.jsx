@@ -1,22 +1,24 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 import { IoIosSend } from "react-icons/io";
 const messagesData = [
   {
     id: 1,
-    name: 'Sarah Johnson',
-    role: 'Seller',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
-    lastMessage: 'Hi Admin',
-    time: '2025-01-10 10:20am',
+    name: "Sarah Johnson",
+    role: "Seller",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
+    lastMessage: "Hi Admin",
+    time: "2025-01-10 10:20am",
     isActive: true,
   },
   {
     id: 2,
-    name: 'Doe Johnson',
-    role: 'Buyer',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
-    lastMessage: 'How Can I Help You',
-    time: '2025-01-10 10:20am',
+    name: "Doe Johnson",
+    role: "Buyer",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+    lastMessage: "How Can I Help You",
+    time: "2025-01-10 10:20am",
     isActive: false,
   },
   // Add more contacts here...
@@ -25,15 +27,15 @@ const messagesData = [
 const chatMessages = [
   {
     id: 1,
-    text: 'Hi Admin',
-    sender: 'them',
-    time: '2025-01-10 10:20am',
+    text: "Hi Admin",
+    sender: "them",
+    time: "2025-01-10 10:20am",
   },
   {
     id: 2,
-    text: 'How Can I Help You',
-    sender: 'me',
-    time: '2025-01-10 10:20am',
+    text: "How Can I Help You",
+    sender: "me",
+    time: "2025-01-10 10:20am",
   },
 ];
 
@@ -77,7 +79,9 @@ const MessagePage = () => {
                 key={contact.id}
                 onClick={() => setSelectedContact(contact)}
                 className={`flex items-start gap-3 p-4 cursor-pointer hover:bg-gray-50 transition-colors ${
-                  selectedContact.id === contact.id ? 'bg-indigo-50 border-l-4 border-[#1A435C]' : ''
+                  selectedContact.id === contact.id
+                    ? "bg-indigo-50 border-l-4 border-[#1A435C]"
+                    : ""
                 }`}
               >
                 <img
@@ -87,10 +91,16 @@ const MessagePage = () => {
                 />
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-baseline">
-                    <p className="font-medium text-gray-900 truncate">{contact.name}</p>
-                    <span className="text-xs text-gray-500 whitespace-nowrap">{contact.time.split(' ')[0]}</span>
+                    <p className="font-medium text-gray-900 truncate">
+                      {contact.name}
+                    </p>
+                    <span className="text-xs text-gray-500 whitespace-nowrap">
+                      {contact.time.split(" ")[0]}
+                    </span>
                   </div>
-                  <p className="text-sm text-gray-600 truncate">{contact.role}</p>
+                  <p className="text-sm text-gray-600 truncate">
+                    {contact.role}
+                  </p>
                   <p className="text-sm text-gray-500 mt-1 truncate">
                     {contact.lastMessage}
                   </p>
@@ -107,18 +117,18 @@ const MessagePage = () => {
             {chatMessages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}
+                className={`flex ${msg.sender === "me" ? "justify-end" : "justify-start"}`}
               >
                 <div
                   className={`max-w-[70%] px-4 py-3 rounded-2xl shadow-sm ${
-                    msg.sender === 'me'
-                      ? 'bg-[#1A435C] text-white rounded-br-none'
-                      : 'bg-white text-gray-800 rounded-bl-none border border-gray-200'
+                    msg.sender === "me"
+                      ? "bg-[#1A435C] text-white rounded-br-none"
+                      : "bg-white text-gray-800 rounded-bl-none border border-gray-200"
                   }`}
                 >
                   <p>{msg.text}</p>
                   <p className="text-xs mt-1 opacity-70 text-right">
-                    {msg.time.split(' ')[1]}
+                    {msg.time.split(" ")[1]}
                   </p>
                 </div>
               </div>
