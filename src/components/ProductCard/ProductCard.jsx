@@ -25,11 +25,11 @@ const ProductCard = ({productName , productImage , sellerName , selleImage, pric
                     <p className="text-2xl font-semibold">$ {price}</p>
                     <p>Listed date: <span className="font-semibold">{listDate}</span></p>
                     <div className="flex  gap-2 mt-5">
-                        {
+                        {/* {
                             status === "approved" ? <button className={`bg-[#00A63E] text-white px-5 py-1 flex items-center justify-center gap-1 rounded-md w-full cursor-pointer capitalize`}><IoMdCheckmarkCircleOutline />{status}</button> : <button className={`bg-[#FFEDD4] text-[#F54900] px-5 py-1  rounded-md w-full cursor-pointer capitalize`}>{status}</button> 
                         }
-                        
-                        <button className={`border-red-600  border text-red-600 px-5 py-1  rounded-md flex items-center gap-1 cursor-pointer`}><RiDeleteBin6Line />Delete</button>
+                         */}
+                        {/* <button className={`border-red-600  border text-red-600 px-5 py-1  rounded-md flex items-center gap-1 cursor-pointer`}><RiDeleteBin6Line />Delete</button> */}
                     </div>
                 </div>
 
