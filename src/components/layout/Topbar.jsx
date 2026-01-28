@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, Search, User, LogOut, Menu } from "lucide-react";
+import { Search, User, LogOut, Menu } from "lucide-react";
 
 const Topbar = ({ setSidebarOpen }) => {
   const navigate = useNavigate();
@@ -36,11 +36,11 @@ const Topbar = ({ setSidebarOpen }) => {
 
       {/* Right Section */}
       <div className="flex items-center gap-2 sm:gap-4">
-        {/* Notifications */}
-        <button className="hover:bg-brand-50 relative rounded-lg p-2 transition-colors">
+        {/* Notifications - Commented out for now */}
+        {/* <button className="hover:bg-brand-50 relative rounded-lg p-2 transition-colors">
           <Bell className="h-5 w-5 text-slate-600" />
           <span className="bg-brand-500 absolute right-1.5 top-1.5 h-2 w-2 rounded-full"></span>
-        </button>
+        </button> */}
 
         {/* User Menu */}
         <div className="relative">
@@ -48,12 +48,12 @@ const Topbar = ({ setSidebarOpen }) => {
             onClick={() => setShowUserMenu(!showUserMenu)}
             className="hover:bg-brand-50 flex items-center gap-2 rounded-lg px-2 py-2 transition-colors sm:gap-3 sm:px-3"
           >
-            <div className="bg-brand-500 flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white">
-              A
-            </div>
-            <div className="hidden text-left sm:block">
+            <div className="hidden text-right sm:block ">
               <p className="text-sm font-medium text-slate-700">Admin User</p>
               <p className="text-xs text-slate-500">admin@cayre.com</p>
+            </div>
+            <div className="bg-brand-500 flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white">
+              A
             </div>
           </button>
 
