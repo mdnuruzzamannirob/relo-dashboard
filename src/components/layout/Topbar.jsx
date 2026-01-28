@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, Search, User, LogOut, Settings, Menu } from "lucide-react";
-import { cn } from "@/utils/cn";
+import { Bell, Search, User, LogOut, Menu } from "lucide-react";
 
 const Topbar = ({ setSidebarOpen }) => {
   const navigate = useNavigate();
@@ -69,17 +68,7 @@ const Topbar = ({ setSidebarOpen }) => {
                 <button
                   onClick={() => {
                     setShowUserMenu(false);
-                    navigate("/dashboard/settings");
-                  }}
-                  className="flex w-full items-center gap-3 px-4 py-2 text-sm text-slate-600 transition hover:bg-brand-50"
-                >
-                  <Settings className="h-4 w-4" />
-                  Settings
-                </button>
-                <button
-                  onClick={() => {
-                    setShowUserMenu(false);
-                    navigate("/dashboard/profile");
+                    navigate("/profile");
                   }}
                   className="flex w-full items-center gap-3 px-4 py-2 text-sm text-slate-600 transition hover:bg-brand-50"
                 >

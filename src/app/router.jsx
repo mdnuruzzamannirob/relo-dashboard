@@ -13,6 +13,7 @@ import Payments from "../pages/dashboard/Payments";
 import Category from "../pages/dashboard/Category";
 import Locker from "../pages/dashboard/Locker";
 import Messages from "../pages/dashboard/Messages";
+import Profile from "../pages/dashboard/Profile";
 import AboutUs from "../pages/dashboard/AboutUs";
 import PrivacyPolicy from "../pages/dashboard/PrivacyPolicy";
 import TermsCondition from "../pages/dashboard/TermsCondition";
@@ -87,6 +88,10 @@ const router = createBrowserRouter([
       {
         path: "message",
         element: <Messages />,
+      },
+      {
+        path: "profile",
+        element: <Profile />,
       },
       {
         path: "about-us",

@@ -25,6 +25,7 @@ import {
   ShoppingBag,
   Layers,
   MapPin,
+  UserCircle,
 } from "lucide-react";
 
 const menuItems = [
@@ -71,6 +72,11 @@ const menuItems = [
 ];
 
 const settingsSubMenu = [
+  {
+    label: "Profile",
+    icon: UserCircle,
+    path: "/profile",
+  },
   {
     label: "About Us",
     icon: Info,
