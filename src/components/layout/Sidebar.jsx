@@ -23,6 +23,8 @@ import {
   HelpCircle,
   TrendingUp,
   ShoppingBag,
+  Layers,
+  MapPin,
 } from "lucide-react";
 
 const menuItems = [
@@ -47,14 +49,19 @@ const menuItems = [
     path: "/orders",
   },
   {
-    label: "Category & Locker",
-    icon: Lock,
-    path: "/category-locker",
+    label: "Payments",
+    icon: CreditCard,
+    path: "/payments",
   },
   {
-    label: "Payment Management",
-    icon: CreditCard,
-    path: "/payment-management",
+    label: "Category",
+    icon: Layers,
+    path: "/category",
+  },
+  {
+    label: "Locker",
+    icon: MapPin,
+    path: "/locker",
   },
   {
     label: "Message",

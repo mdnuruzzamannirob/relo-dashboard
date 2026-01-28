@@ -9,8 +9,9 @@ import DashboardLayout from "@/layouts/DashboardLayout";
 import Users from "../pages/dashboard/Users";
 import Products from "../pages/dashboard/Products";
 import Orders from "../pages/dashboard/Orders";
-import CategoryLocker from "../pages/CategoryLocker/CategoryLocker";
-import PaymentManagement from "../pages/PaymentManagement/PaymentManagement";
+import Payments from "../pages/dashboard/Payments";
+import Category from "../pages/dashboard/Category";
+import Locker from "../pages/dashboard/Locker";
 import MessagePage from "../pages/MessagePage/MessagePage";
 import AboutUs from "../pages/dashboard/AboutUs";
 import PrivacyPolicy from "../pages/dashboard/PrivacyPolicy";
@@ -72,12 +73,16 @@ const router = createBrowserRouter([
         element: <Orders />,
       },
       {
-        path: "category-locker",
-        element: <CategoryLocker />,
+        path: "payments",
+        element: <Payments />,
       },
       {
-        path: "payment-management",
-        element: <PaymentManagement />,
+        path: "category",
+        element: <Category />,
+      },
+      {
+        path: "locker",
+        element: <Locker />,
       },
       {
         path: "message",
