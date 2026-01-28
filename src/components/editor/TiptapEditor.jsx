@@ -75,7 +75,7 @@ export default function TiptapEditor({ value, onChange }) {
   return (
     <div className="w-full overflow-hidden rounded-2xl border border-gray-200">
       {editor && <Toolbar editor={editor} />}
-      <div className="custom-scrollbar max-h-[65vh] min-h-80 w-full overflow-y-auto bg-white">
+      <div className="custom-scrollbar max-h-[65vh] min-h-80 w-full overflow-y-auto bg-white p-5">
         <EditorContent editor={editor} />
       </div>
     </div>

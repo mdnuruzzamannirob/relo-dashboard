@@ -140,7 +140,7 @@ export const Dropdown = ({ icon: Icon, label, children, active, title }) => {
           >
             <div
               ref={dropdownRef}
-              className={`animate-in fade-in zoom-in-95 custom-scrollbar max-w-[calc(100vw-24px)] min-w-40 overflow-y-auto rounded-xl border border-slate-100 bg-white p-1 shadow-2xl ${
+              className={`animate-in fade-in zoom-in-95 custom-scrollbar max-w-[calc(100vw-24px)] min-w-fit overflow-y-auto rounded-xl border border-slate-100 bg-white p-1 shadow-2xl ${
                 !isMeasured ? "invisible" : ""
               }`}
               style={{

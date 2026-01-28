@@ -518,10 +518,10 @@ export default function Toolbar({ editor }) {
 
       {/* Font Family & Size */}
       <Dropdown label={currentFont} title="Font Family" active={detectedFont}>
-        <div className="custom-scrollbar max-h-60 overflow-y-auto">
+        <div className="custom-scrollbar w-64 max-h-96 overflow-y-auto">
           <button
             onClick={() => editor.chain().focus().unsetFontFamily().run()}
-            className="dropdown-item text-gray-400 italic"
+            className="dropdown-item w-full px-3 py-2 text-left text-sm text-gray-400 italic hover:bg-slate-50"
           >
             Default
           </button>
@@ -540,10 +540,10 @@ export default function Toolbar({ editor }) {
       </Dropdown>
 
       <Dropdown label={currentSize} title="Font Size" active={detectedSize}>
-        <div className="custom-scrollbar max-h-60 overflow-y-auto">
+        <div className="custom-scrollbar w-48 max-h-96 overflow-y-auto">
           <button
             onClick={() => editor.chain().focus().unsetFontSize().run()}
-            className="dropdown-item text-gray-400 italic"
+            className="dropdown-item w-full px-3 py-2 text-left text-sm text-gray-400 italic hover:bg-slate-50"
           >
             Default
           </button>
@@ -816,7 +816,7 @@ export default function Toolbar({ editor }) {
           title="Link Options"
           active={editor.isActive("link")}
         >
-          <div className="flex min-w-65 flex-col gap-2 p-3">
+          <div className="flex w-64 flex-col gap-2 p-3">
             <h4 className="px-1 text-[11px] font-bold tracking-wider text-slate-400 uppercase">
               {editor.isActive("link") ? "Edit Link" : "Insert Link"}
             </h4>
@@ -870,7 +870,7 @@ export default function Toolbar({ editor }) {
         </Dropdown>
 
         <Dropdown icon={ImageIcon} title="Image Options">
-          <div className="flex min-w-65 flex-col gap-3 p-3">
+          <div className="flex w-64 flex-col gap-3 p-3">
             <div>
               <h4 className="mb-2 px-1 text-[11px] font-bold tracking-wider text-slate-400 uppercase">
                 Image URL
