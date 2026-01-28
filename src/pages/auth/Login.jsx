@@ -10,7 +10,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     localStorage.setItem("isAuthenticated", "true");
-    navigate("/");
+    navigate("/overview");
   };
 
   return (
