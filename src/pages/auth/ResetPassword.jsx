@@ -2,7 +2,7 @@ import ButtonComp from "@/components/common/ButtonComp";
 import Logo from "@/components/common/Logo";
 import { Link, useNavigate } from "react-router-dom";
 
-const Resetpassword = () => {
+const ResetPassword = () => {
   const navigate = useNavigate();
   const isLoading = false;
 
@@ -78,4 +78,4 @@ const Resetpassword = () => {
   );
 };
 
-export default Resetpassword;
+export default ResetPassword;

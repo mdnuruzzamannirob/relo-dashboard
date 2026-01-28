@@ -3,7 +3,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import Login from "../pages/auth/Login";
 import ForgotPassword from "../pages/auth/ForgotPassword";
 import VerifyOtp from "../pages/auth/VerifyOtp";
-import Resetpassword from "../pages/auth/Resetpassword";
+import ResetPassword from "../pages/auth/ResetPassword";
 import Overview from "../pages/dashboard/Overview";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import Users from "../pages/dashboard/Users";
@@ -41,7 +41,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/reset-password",
-    element: <Resetpassword />,
+    element: <ResetPassword />,
   },
 
   // Protected Dashboard Routes
