@@ -11,7 +11,14 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <AuthInitializer>
       <RouterProvider router={router} />
-      <Toaster position="top-center" richColors duration={3000} />
+      <Toaster
+        position="top-center"
+        richColors
+        theme="light"
+        duration={3000}
+        expand
+        swipeDirections={["bottom", "top", "left", "right"]}
+      />
     </AuthInitializer>
   </Provider>,
 );
