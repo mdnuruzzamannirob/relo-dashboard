@@ -1,14 +1,41 @@
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Link, useNavigate } from "react-router-dom";
 import ButtonComp from "@/components/common/ButtonComp";
 import Logo from "@/components/common/Logo";
-import { Link, useNavigate } from "react-router-dom";
+import { forgotPasswordSchema } from "@/utils/validationSchemas";
+import { AlertCircle } from "lucide-react";
+import { useForgotPasswordMutation } from "@/store/apis/authApi";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
-  const isLoading = false;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    navigate("/verify-otp");
+  const [forgotPassword, { isLoading, isSuccess }] =
+    useForgotPasswordMutation();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(forgotPasswordSchema),
+    mode: "onChange",
+  });
+
+  // Handle successful OTP send
+  useEffect(() => {
+    if (isSuccess) {
+      navigate("/verify-otp", { replace: true });
+    }
+  }, [isSuccess, navigate]);
+
+  const onSubmit = async (formData) => {
+    const payload = {
+      email: formData.email,
+    };
+
+    forgotPassword(payload);
   };
 
   return (
@@ -24,27 +51,38 @@ const ForgotPassword = () => {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div>
             <label
               htmlFor="email"
               className="mb-1 block text-sm font-medium text-slate-500"
             >
-              Email
+              Email <span className="text-red-500">*</span>
             </label>
-            <input
-              type="email"
-              id="email"
-              placeholder="you@example.com"
-              className="border-brand-100 focus:bg-brand-50/50 h-11 w-full rounded-md border px-4 text-sm outline-none placeholder:text-slate-400 focus:ring-1 focus:ring-slate-300"
-            />
+            <div className="relative">
+              <input
+                {...register("email")}
+                type="email"
+                id="email"
+                placeholder="you@example.com"
+                disabled={isLoading || isSubmitting}
+                className="border-brand-100 focus:bg-brand-50/50 h-11 w-full rounded-md border px-4 text-sm transition-all outline-none placeholder:text-slate-400 focus:ring-1 focus:ring-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
+              />
+              {errors.email && (
+                <div className="mt-1 flex items-center gap-1 text-xs text-red-500">
+                  <AlertCircle size={14} />
+                  {errors.email.message}
+                </div>
+              )}
+            </div>
           </div>
 
           <ButtonComp
             type="submit"
-            loading={isLoading}
+            loading={isLoading || isSubmitting}
             loadingText="Sending..."
             size="lg"
+            disabled={isLoading || isSubmitting}
             className="h-11 w-full"
           >
             Send OTP

@@ -1,15 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, User, LogOut, Menu } from "lucide-react";
+import { Search, User, LogOut, Menu, Loader2 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useLogoutMutation } from "@/store/apis/authApi";
+import { getInitials } from "@/utils/getInitials";
 
 const Topbar = ({ setSidebarOpen }) => {
   const navigate = useNavigate();
   const [showUserMenu, setShowUserMenu] = useState(false);
 
-  const handleLogout = () => {
-    localStorage.removeItem("isAuthenticated");
-    navigate("/login");
-  };
+  const { isLoading, user } = useAuth();
+
+  const [logout, { isLoading: isLogoutLoading, isSuccess }] =
+    useLogoutMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate("/login");
+    }
+  }, [isSuccess, navigate]);
 
   return (
     <header className="border-brand-100 flex h-16 items-center justify-between border-b bg-white px-4 sm:px-6">
@@ -49,11 +58,14 @@ const Topbar = ({ setSidebarOpen }) => {
             className="hover:bg-brand-50 flex items-center gap-2 rounded-lg px-2 py-2 transition-colors sm:gap-3 sm:px-3"
           >
             <div className="hidden text-right sm:block ">
-              <p className="text-sm font-medium text-slate-700">Admin User</p>
-              <p className="text-xs text-slate-500">admin@cayre.com</p>
+              <p className="text-sm font-medium text-slate-700">
+                {" "}
+                {user?.name}
+              </p>
+              <p className="text-xs text-slate-500">{user?.email}</p>
             </div>
             <div className="bg-brand-500 flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white">
-              A
+              {getInitials(user?.name)}
             </div>
           </button>
 
@@ -64,7 +76,7 @@ const Topbar = ({ setSidebarOpen }) => {
                 className="fixed inset-0 z-10"
                 onClick={() => setShowUserMenu(false)}
               />
-              <div className="absolute right-0 top-full z-20 mt-2 w-48 rounded-lg border border-brand-100 bg-white py-2 shadow-lg">
+              <div className="absolute right-0 top-full z-20 w-48 rounded-lg border border-brand-100 bg-white py-2 shadow-lg">
                 <button
                   onClick={() => {
                     setShowUserMenu(false);
@@ -77,11 +89,21 @@ const Topbar = ({ setSidebarOpen }) => {
                 </button>
                 <hr className="border-brand-100 my-2" />
                 <button
-                  onClick={handleLogout}
+                  onClick={() => logout()}
+                  disabled={isLogoutLoading}
                   className="flex w-full items-center gap-3 px-4 py-2 text-sm text-red-600 transition hover:bg-red-50"
                 >
-                  <LogOut className="h-4 w-4" />
-                  Logout
+                  {isLogoutLoading ? (
+                    <>
+                      <Loader2 className="size-4 animate-spin" />
+                      Logging out...
+                    </>
+                  ) : (
+                    <>
+                      <LogOut className="size-4" />
+                      Logout
+                    </>
+                  )}
                 </button>
               </div>
             </>

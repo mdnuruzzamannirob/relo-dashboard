@@ -1,12 +1,17 @@
-import ReactDOM from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
+import ReactDOM from "react-dom/client";
+import { RouterProvider } from "react-router-dom";
+import { Provider } from "react-redux";
+import { Toaster } from "sonner";
+import router from "./app/router";
+import { store } from "./store/store";
+import "./index.css";
+import AuthInitializer from "./layouts/AuthInitializer";
 
-import router from './app/router';
-import { AuthProvider } from './context/AuthContext';
-import './index.css';
-
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <AuthProvider>
-    <RouterProvider router={router} />
-  </AuthProvider>,
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <Provider store={store}>
+    <AuthInitializer>
+      <RouterProvider router={router} />
+      <Toaster position="top-center" richColors duration={3000} />
+    </AuthInitializer>
+  </Provider>,
 );

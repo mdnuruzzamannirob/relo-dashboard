@@ -23,6 +23,7 @@ import HelpCenter from "../pages/dashboard/HelpCenter";
 import SellingGuide from "../pages/dashboard/SellingGuide";
 import BuyingGuide from "../pages/dashboard/BuyingGuide";
 import NotFound from "../pages/NotFound";
+import PrivateRoute from "./PrivateRoute";
 
 const router = createBrowserRouter([
   // Public Routes (No Layout)
@@ -47,7 +48,11 @@ const router = createBrowserRouter([
   // Protected Dashboard Routes
   {
     path: "/",
-    element: <DashboardLayout />,
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
     children: [
       {
         index: true,
