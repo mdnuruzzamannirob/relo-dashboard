@@ -1,11 +1,11 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { toast } from "sonner";
-import { baseQuery } from "../baseQuery";
+import { baseQueryWithReauth } from "../baseQuery";
 import { clearUser, setUser } from "../slices/authSlice";
 
 export const authApi = createApi({
   reducerPath: "authApi",
-  baseQuery,
+  baseQuery: baseQueryWithReauth,
   tagTypes: ["User"],
   endpoints: (builder) => ({
     // Login
@@ -21,17 +21,29 @@ export const authApi = createApi({
             data: { data },
           } = await queryFulfilled;
 
+          // Store token securely
           if (data.token) {
             localStorage.setItem("authToken", data.token);
+          } else {
+            throw new Error("No token received from server");
           }
 
-          dispatch(setUser(data?.userData));
+          // Set user data in Redux
+          if (data?.userData) {
+            dispatch(setUser(data.userData));
+          }
 
           toast.success("Sign in successful!");
         } catch (error) {
           const errorMessage =
-            error?.error?.data?.message || "Something went wrong";
+            error?.error?.data?.message ||
+            error?.message ||
+            "Something went wrong";
           toast.error(errorMessage);
+
+          // Ensure any failed login clears auth
+          dispatch(clearUser());
+          localStorage.removeItem("authToken");
         }
       },
       invalidatesTags: ["User"],

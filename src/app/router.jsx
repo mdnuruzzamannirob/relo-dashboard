@@ -24,25 +24,42 @@ import SellingGuide from "../pages/dashboard/SellingGuide";
 import BuyingGuide from "../pages/dashboard/BuyingGuide";
 import NotFound from "../pages/NotFound";
 import PrivateRoute from "./PrivateRoute";
+import PublicRoute from "./PublicRoute";
 
 const router = createBrowserRouter([
-  // Public Routes (No Layout)
+  // Public Auth Routes (Protected - only accessible when NOT logged in)
   {
     path: "/login",
-    element: <Login />,
+    element: (
+      <PublicRoute>
+        <Login />
+      </PublicRoute>
+    ),
   },
 
   {
     path: "/forgot-password",
-    element: <ForgotPassword />,
+    element: (
+      <PublicRoute>
+        <ForgotPassword />
+      </PublicRoute>
+    ),
   },
   {
     path: "/verify-otp",
-    element: <VerifyOtp />,
+    element: (
+      <PublicRoute>
+        <VerifyOtp />
+      </PublicRoute>
+    ),
   },
   {
     path: "/reset-password",
-    element: <ResetPassword />,
+    element: (
+      <PublicRoute>
+        <ResetPassword />
+      </PublicRoute>
+    ),
   },
 
   // Protected Dashboard Routes

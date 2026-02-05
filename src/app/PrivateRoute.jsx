@@ -2,9 +2,10 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 export default function PrivateRoute({ children }) {
-  const { isLoading, isAuthenticated } = useAuth();
+  const { isLoading, isAuthenticated, user } = useAuth();
   const location = useLocation();
 
+  // Show loading state while checking authentication
   if (isLoading) {
     return (
       <div className="h-screen flex justify-center items-center bg-background">
@@ -13,7 +14,8 @@ export default function PrivateRoute({ children }) {
     );
   }
 
-  if (!isAuthenticated) {
+  // Not authenticated, redirect to login
+  if (!isAuthenticated || !user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
