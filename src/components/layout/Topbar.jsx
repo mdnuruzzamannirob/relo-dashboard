@@ -64,9 +64,21 @@ const Topbar = ({ setSidebarOpen }) => {
               </p>
               <p className="text-xs text-slate-500">{user?.email}</p>
             </div>
-            <div className="bg-brand-500 flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white">
-              {getInitials(user?.name)}
-            </div>
+
+            {user?.profileImage ? (
+              <img
+                src={user.profileImage}
+                alt="Profile"
+                width={32}
+                height={32}
+                className="h-8 w-8 rounded-full object-cover"
+                unoptimized
+              />
+            ) : (
+              <div className="bg-brand-500 flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white">
+                {getInitials(user?.name)}
+              </div>
+            )}
           </button>
 
           {/* Dropdown Menu */}

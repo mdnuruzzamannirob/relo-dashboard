@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { CheckCircle2, Edit3, X } from "lucide-react";
-import { toast } from "react-toastify";
 import TiptapEditor from "../../components/editor/TiptapEditor";
 import TiptapViewer from "../../components/editor/TiptapViewer";
+import { toast } from "sonner";
 
 const AboutUs = () => {
   const [content, setContent] = useState("");
