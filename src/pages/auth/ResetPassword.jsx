@@ -5,8 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import ButtonComp from "@/components/common/ButtonComp";
 import Logo from "@/components/common/Logo";
 import { useResetPasswordMutation } from "@/store/apis/authApi";
-import { resetPasswordSchema } from "@/utils/validationSchemas";
 import { AlertCircle, Eye, EyeOff } from "lucide-react";
+import { resetPasswordSchema } from "@/lib/schema/validationSchema";
 
 const ResetPassword = () => {
   const navigate = useNavigate();

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Search, Eye, Trash2 } from "lucide-react";
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/utils/cn";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,

@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import ButtonComp from "@/components/common/ButtonComp";
 import Logo from "@/components/common/Logo";
-import { forgotPasswordSchema } from "@/utils/validationSchemas";
 import { AlertCircle } from "lucide-react";
 import { useForgotPasswordMutation } from "@/store/apis/authApi";
+import { forgotPasswordSchema } from "@/lib/schema/validationSchema";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();

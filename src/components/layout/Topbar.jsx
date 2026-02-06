@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Search, User, LogOut, Menu, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useLogoutMutation } from "@/store/apis/authApi";
-import { getInitials } from "@/utils/getInitials";
+import { getInitials } from "@/lib/utils/getInitials";
 
 const Topbar = ({ setSidebarOpen }) => {
   const navigate = useNavigate();

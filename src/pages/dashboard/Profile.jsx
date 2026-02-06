@@ -10,8 +10,8 @@ import { AlertCircle, Eye, EyeOff, Loader2, Upload } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
-import { changePasswordSchema } from "@/utils/validationSchemas";
-import { getInitials } from "@/utils/getInitials";
+import { getInitials } from "@/lib/utils/getInitials";
+import { changePasswordSchema } from "@/lib/schema/validationSchema";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -19,12 +19,12 @@ const Profile = () => {
 
   // Profile state
   const [profileData, setProfileData] = useState({
-    name: "",
+    title: "",
     phone: "",
     location: "",
   });
   const [originalProfileData, setOriginalProfileData] = useState({
-    name: "",
+    title: "",
     phone: "",
     location: "",
   });

@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/utils/cn";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
 

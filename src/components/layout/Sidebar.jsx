@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../common/Logo";
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/utils/cn";
 import {
   LayoutDashboard,
   ShoppingCart,

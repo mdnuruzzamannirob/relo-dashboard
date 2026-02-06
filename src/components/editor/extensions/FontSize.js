@@ -2,7 +2,7 @@ import { Extension } from "@tiptap/core";
 import "@tiptap/extension-text-style";
 
 export const FontSize = Extension.create({
-  name: "fontSize",
+  title: "fontSize",
   addOptions() {
     return {
       types: ["textStyle"],

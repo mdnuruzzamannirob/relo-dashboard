@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, Link } from "react-router-dom";
 import ButtonComp from "@/components/common/ButtonComp";
 import Logo from "@/components/common/Logo";
-import { loginSchema } from "@/utils/validationSchemas";
 import { AlertCircle, Eye, EyeOff } from "lucide-react";
 import { useLoginMutation } from "@/store/apis/authApi";
+import { loginSchema } from "@/lib/schema/validationSchema";
 
 const Login = () => {
   const navigate = useNavigate();
