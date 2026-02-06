@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { clearUser, setIsLoading, setUser } from "@/store/slices/authSlice";
+import { clearUser, setIsLoading, setUser } from "@/store/slices/userSlice";
 import { authApi } from "@/store/apis/authApi";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";

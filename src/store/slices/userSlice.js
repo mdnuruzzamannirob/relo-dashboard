@@ -1,39 +1,32 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  profile: null,
-  preferences: {},
+  user: null,
+  isAuthenticated: false,
+  isLoading: true,
 };
 
-const userSlice = createSlice({
-  name: "user",
+const authSlice = createSlice({
+  name: "auth",
   initialState,
   reducers: {
-    setUserProfile: (state, action) => {
-      state.profile = action.payload;
+    setUser: (state, action) => {
+      state.user = action.payload;
+      state.isAuthenticated = !!action.payload;
     },
-    updateUserProfile: (state, action) => {
-      state.profile = { ...state.profile, ...action.payload };
+    setIsAuthenticated: (state, action) => {
+      state.isAuthenticated = action.payload;
     },
-    setUserPreferences: (state, action) => {
-      state.preferences = action.payload;
+    setIsLoading: (state, action) => {
+      state.isLoading = action.payload;
     },
-    clearAdminData: (state) => {
-      state.profile = null;
-      state.preferences = {};
+    clearUser: (state) => {
+      state.user = null;
+      state.isAuthenticated = false;
     },
   },
 });
 
-export const {
-  setUserProfile,
-  updateUserProfile,
-  setUserPreferences,
-  clearAdminData,
-} = userSlice.actions;
-
-export default userSlice.reducer;
-
-// Selectors
-export const selectUserProfile = (state) => state.user.profile;
-export const selectUserPreferences = (state) => state.user.preferences;
+export const { setUser, setIsAuthenticated, setIsLoading, clearUser } =
+  authSlice.actions;
+export default authSlice.reducer;

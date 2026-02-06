@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { toast } from "sonner";
 import { baseQueryWithReauth } from "../baseQuery";
-import { clearUser, setUser } from "../slices/authSlice";
+import { clearUser, setUser } from "../slices/userSlice";
 
 export const authApi = createApi({
   reducerPath: "authApi",
@@ -168,9 +168,65 @@ export const authApi = createApi({
     changePassword: builder.mutation({
       query: (body) => ({
         url: "/auth/change-password",
-        method: "POST",
+        method: "PUT",
         body,
       }),
+      async onQueryStarted(args, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Password changed successfully!");
+        } catch (error) {
+          const errorMessage =
+            error?.error?.data?.message || "Failed to change password";
+          toast.error(errorMessage);
+        }
+      },
+      invalidatesTags: ["User"],
+    }),
+
+    // Profile Image Upload
+    profileImage: builder.mutation({
+      query: (formData) => ({
+        url: "/users/profile-image",
+        method: "PUT",
+        body: formData,
+      }),
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        try {
+          const {
+            data: { data },
+          } = await queryFulfilled;
+          dispatch(setUser(data));
+          toast.success("Profile image updated successfully!");
+        } catch (error) {
+          const errorMessage =
+            error?.error?.data?.message || "Failed to update profile image";
+          toast.error(errorMessage);
+        }
+      },
+      invalidatesTags: ["User"],
+    }),
+
+    // Profile Update
+    profileUpdate: builder.mutation({
+      query: (formData) => ({
+        url: "/users/profile-update",
+        method: "PUT",
+        body: formData,
+      }),
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        try {
+          const {
+            data: { data },
+          } = await queryFulfilled;
+          dispatch(setUser(data));
+          toast.success("Profile updated successfully!");
+        } catch (error) {
+          const errorMessage =
+            error?.error?.data?.message || "Failed to update profile";
+          toast.error(errorMessage);
+        }
+      },
       invalidatesTags: ["User"],
     }),
 
@@ -219,4 +275,6 @@ export const {
   useResetPasswordMutation,
   useChangePasswordMutation,
   useLogoutMutation,
+  useProfileImageMutation,
+  useProfileUpdateMutation,
 } = authApi;
