@@ -8,7 +8,7 @@ export const StatCardSkeleton = () => (
   </div>
 );
 
-export const CategoryTableSkeleton = ({ rows = 8 }) => (
+export const CategoryTableSkeleton = ({ rows = 10 }) => (
   <Table>
     <TableBody>
       {Array.from({ length: rows }).map((_, idx) => (

@@ -32,12 +32,9 @@ import {
   useGetLockerAddressesQuery,
   useUpdateLockerAddressMutation,
 } from "@/store/apis/lockerAddressApi";
-import { categorySchema } from "@/lib/schema/categorySchema";
+import { categoryLockerSchema } from "@/lib/schema/categoryLockerSchema";
 import { useDebounce } from "@/hooks/useDebounce";
-import {
-  CategoryTableSkeleton,
-  StatCardSkeleton,
-} from "@/components/skeletons/CategorySkeletons";
+import { CategoryTableSkeleton } from "@/components/skeletons/CategorySkeletons";
 import ButtonComp from "@/components/common/ButtonComp";
 
 const TAB_CONFIG = {
@@ -120,7 +117,7 @@ const CategoryAndLocker = () => {
     useDeleteLockerAddressMutation();
 
   const form = useForm({
-    resolver: zodResolver(categorySchema),
+    resolver: zodResolver(categoryLockerSchema),
     defaultValues: { title: "" },
     mode: "onChange",
   });

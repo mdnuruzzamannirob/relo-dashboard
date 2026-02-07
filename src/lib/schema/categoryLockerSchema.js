@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const categorySchema = z.object({
+export const categoryLockerSchema = z.object({
   title: z
     .string()
     .trim()
