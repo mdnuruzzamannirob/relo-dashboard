@@ -23,9 +23,6 @@ export const CategoryTableSkeleton = ({ rows = 8 }) => (
             <div className="h-4 w-72 animate-pulse rounded bg-slate-200" />
           </TableCell>
           <TableCell>
-            <div className="h-4 w-14 animate-pulse rounded bg-slate-200" />
-          </TableCell>
-          <TableCell>
             <div className="ml-auto h-8 w-24 animate-pulse rounded bg-slate-200" />
           </TableCell>
         </TableRow>

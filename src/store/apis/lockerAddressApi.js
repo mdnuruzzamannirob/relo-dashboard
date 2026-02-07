@@ -2,35 +2,33 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { toast } from "sonner";
 import { baseQueryWithReauth } from "../baseQuery";
 
-export const categoryApi = createApi({
-  reducerPath: "categoryApi",
+export const lockerAddressApi = createApi({
+  reducerPath: "lockerAddressApi",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["Category"],
+  tagTypes: ["LockerAddress"],
   endpoints: (builder) => ({
-    // Create Category
-    createCategory: builder.mutation({
+    createLockerAddress: builder.mutation({
       query: (body) => ({
-        url: "/categories/create",
+        url: "/locker-address/create",
         method: "POST",
         body,
       }),
       async onQueryStarted(_, { queryFulfilled }) {
         try {
           await queryFulfilled;
-          toast.success("Category created successfully!");
+          toast.success("Locker address created successfully!");
         } catch (error) {
           const errorMessage =
             error?.error?.data?.message ||
             error?.message ||
-            "Failed to create category";
+            "Failed to create locker address";
           toast.error(errorMessage);
         }
       },
-      invalidatesTags: [{ type: "Category", id: "LIST" }],
+      invalidatesTags: [{ type: "LockerAddress", id: "LIST" }],
     }),
 
-    // Get Categories
-    getCategories: builder.query({
+    getLockerAddresses: builder.query({
       query: ({ page = 1, limit = 10, searchTerm }) => {
         const params = new URLSearchParams();
         params.set("page", String(page));
@@ -38,86 +36,83 @@ export const categoryApi = createApi({
         if (searchTerm) params.set("searchTerm", searchTerm);
 
         return {
-          url: `/categories/all?${params.toString()}`,
+          url: `/locker-address/all?${params.toString()}`,
           method: "GET",
         };
       },
       providesTags: (result) =>
-        result?.data?.categories?.length
+        result?.data?.lockerAddresses?.length
           ? [
-              { type: "Category", id: "LIST" },
-              ...result.data.categories.map((c) => ({
-                type: "Category",
-                id: c._id,
+              { type: "LockerAddress", id: "LIST" },
+              ...result.data.lockerAddresses.map((l) => ({
+                type: "LockerAddress",
+                id: l._id,
               })),
             ]
-          : [{ type: "Category", id: "LIST" }],
+          : [{ type: "LockerAddress", id: "LIST" }],
     }),
 
-    // Get Category by ID
-    getCategoryById: builder.query({
+    getLockerAddressById: builder.query({
       query: (id) => ({
-        url: `/categories/details/${id}`,
+        url: `/locker-address/details/${id}`,
         method: "GET",
       }),
-      providesTags: (_res, _err, id) => [{ type: "Category", id }],
+      providesTags: (_res, _err, id) => [{ type: "LockerAddress", id }],
     }),
 
-    // Update Category
-    updateCategory: builder.mutation({
+    updateLockerAddress: builder.mutation({
       query: ({ id, ...body }) => ({
-        url: `/categories/update/${id}`,
+        url: `/locker-address/update/${id}`,
         method: "PUT",
         body,
       }),
       async onQueryStarted(_, { queryFulfilled }) {
         try {
           await queryFulfilled;
-          toast.success("Category updated successfully!");
+          toast.success("Locker address updated successfully!");
         } catch (error) {
           const errorMessage =
             error?.error?.data?.message ||
             error?.message ||
-            "Failed to update category";
+            "Failed to update locker address";
           toast.error(errorMessage);
         }
       },
       invalidatesTags: (_res, _err, { id }) => [
-        { type: "Category", id },
-        { type: "Category", id: "LIST" },
+        { type: "LockerAddress", id },
+        { type: "LockerAddress", id: "LIST" },
       ],
     }),
 
-    // Delete Category
-    deleteCategory: builder.mutation({
+    deleteLockerAddress: builder.mutation({
       query: (id) => ({
-        url: `/categories/delete/${id}`,
+        url: `/locker-address/delete/${id}`,
         method: "DELETE",
       }),
       async onQueryStarted(_, { queryFulfilled }) {
         try {
           await queryFulfilled;
-          toast.success("Category deleted successfully!");
+          toast.success("Locker address deleted successfully!");
         } catch (error) {
           const errorMessage =
             error?.error?.data?.message ||
             error?.message ||
-            "Failed to delete category";
+            "Failed to delete locker address";
           toast.error(errorMessage);
         }
       },
       invalidatesTags: (_res, _err, id) => [
-        { type: "Category", id },
-        { type: "Category", id: "LIST" },
+        { type: "LockerAddress", id },
+        { type: "LockerAddress", id: "LIST" },
       ],
     }),
   }),
 });
 
 export const {
-  useCreateCategoryMutation,
-  useGetCategoriesQuery,
-  useGetCategoryByIdQuery,
-  useUpdateCategoryMutation,
-  useDeleteCategoryMutation,
-} = categoryApi;
+  useCreateLockerAddressMutation,
+  useGetLockerAddressesQuery,
+  useGetLockerAddressByIdQuery,
+  useUpdateLockerAddressMutation,
+  useDeleteLockerAddressMutation,
+} = lockerAddressApi;

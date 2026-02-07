@@ -10,8 +10,7 @@ import Users from "../pages/dashboard/Users";
 import Products from "../pages/dashboard/Products";
 import Orders from "../pages/dashboard/Orders";
 import Payments from "../pages/dashboard/Payments";
-import Category from "../pages/dashboard/Category";
-import Locker from "../pages/dashboard/Locker";
+import CategoryAndLocker from "../pages/dashboard/CategoryAndLocker";
 import Messages from "../pages/dashboard/Messages";
 import Profile from "../pages/dashboard/Profile";
 import AboutUs from "../pages/dashboard/AboutUs";
@@ -100,12 +99,8 @@ const router = createBrowserRouter([
         element: <Payments />,
       },
       {
-        path: "category",
-        element: <Category />,
-      },
-      {
-        path: "locker",
-        element: <Locker />,
+        path: "category&locker",
+        element: <CategoryAndLocker />,
       },
       {
         path: "message",

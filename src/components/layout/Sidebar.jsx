@@ -11,7 +11,6 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronDown,
-  Lock,
   CreditCard,
   MessageSquare,
   LogOut,
@@ -23,9 +22,8 @@ import {
   HelpCircle,
   TrendingUp,
   ShoppingBag,
-  Layers,
-  MapPin,
   UserCircle,
+  Boxes,
 } from "lucide-react";
 
 const menuItems = [
@@ -55,14 +53,9 @@ const menuItems = [
     path: "/payments",
   },
   {
-    label: "Category",
-    icon: Layers,
-    path: "/category",
-  },
-  {
-    label: "Locker",
-    icon: MapPin,
-    path: "/locker",
+    label: "Category & Locker",
+    icon: Boxes,
+    path: "/category&locker",
   },
   {
     label: "Message",
