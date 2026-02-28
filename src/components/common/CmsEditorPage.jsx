@@ -3,7 +3,6 @@ import { Edit3, RotateCw, X } from "lucide-react";
 import { toast } from "sonner";
 import TiptapEditor from "@/components/editor/TiptapEditor";
 import TiptapViewer from "@/components/editor/TiptapViewer";
-import { Skeleton } from "../ui/skeleton";
 import CmsEditorSkeletons from "../skeletons/CmsEditorSkeletons";
 
 const CmsEditorPage = ({

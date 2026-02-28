@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  Search,
   Mail,
   Phone,
   MapPin,
@@ -9,10 +8,11 @@ import {
   Lock,
   Unlock,
   UserCheck,
+  AlertCircle,
 } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils/cn";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -20,13 +20,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -50,6 +43,8 @@ import {
 import { useDebounce } from "@/hooks/useDebounce";
 import { getInitials } from "@/lib/utils/getInitials";
 import { UserTableSkeleton } from "@/components/skeletons/DashboardSkeletons";
+import { FilterCard } from "@/components/common/FilterCard";
+import { StatusBadge } from "@/components/common/StatusBadge";
 
 const STATUS_OPTIONS = [
   { label: "All Users", value: "ALL" },
@@ -65,14 +60,6 @@ const ACTION_MAP = {
   BLOCKED: { next: "INACTIVE", label: "Deactivate", icon: Lock },
 };
 
-const statusColour = (status) => {
-  const s = status?.toUpperCase();
-  if (s === "ACTIVE") return "bg-green-100 text-green-700";
-  if (s === "INACTIVE") return "bg-slate-100 text-slate-600";
-  if (s === "SUSPENDED" || s === "BLOCKED") return "bg-red-100 text-red-700";
-  return "bg-slate-100 text-slate-600";
-};
-
 const UserAvatar = ({ name, src }) => {
   if (src)
     return (
@@ -85,12 +72,6 @@ const UserAvatar = ({ name, src }) => {
   );
 };
 
-const ErrorBlock = ({ message }) => (
-  <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600">
-    {message || "Failed to load users. Please try again."}
-  </div>
-);
-
 const LIMIT = 10;
 
 const Users = () => {
@@ -102,7 +83,7 @@ const Users = () => {
 
   const searchTerm = useDebounce(searchInput, 400);
 
-  const { data, isLoading, isFetching, isError } = useGetAllUsersQuery({
+  const { data, isLoading, isFetching, isError, error } = useGetAllUsersQuery({
     page,
     limit: LIMIT,
     status: statusFilter,
@@ -117,7 +98,13 @@ const Users = () => {
   const totalPages = meta.totalPage ?? 1;
 
   const handleSearchChange = (e) => {
-    setSearchInput(e.target.value);
+    const val = e.target.value;
+    setSearchInput(val);
+    setPage(1);
+  };
+
+  const handleClearSearch = () => {
+    setSearchInput("");
     setPage(1);
   };
 
@@ -134,75 +121,83 @@ const Users = () => {
 
   const confirmAction = async () => {
     if (!pendingAction) return;
-    await updateUserAction({
-      userId: pendingAction.user.id,
-      status: pendingAction.nextStatus,
-    });
+    try {
+      await updateUserAction({
+        userId: pendingAction.user.id,
+        status: pendingAction.nextStatus,
+      }).unwrap();
+      toast.success(`User ${pendingAction.label.toLowerCase()}d successfully`);
+    } catch (err) {
+      toast.error(err?.data?.message || "Failed to update user status");
+    }
     setPendingAction(null);
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-slate-800">User Management</h1>
-        <p className="mt-2 text-slate-600">
+      <div className="space-y-1">
+        <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">
+          User Management
+        </h1>
+        <p className="text-slate-500 text-sm">
           Manage and monitor all users in your platform
         </p>
       </div>
 
-      {isError && <ErrorBlock />}
-
-      {/* Controls */}
-      <div className="rounded-lg border border-slate-200 bg-white p-4">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-            <Input
-              placeholder="Search by name or email..."
-              className="pl-10"
-              value={searchInput}
-              onChange={handleSearchChange}
-            />
-          </div>
-          <Select value={statusFilter} onValueChange={handleStatusFilter}>
-            <SelectTrigger className="w-full sm:w-44">
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent>
-              {STATUS_OPTIONS.map((o) => (
-                <SelectItem key={o.value} value={o.value}>
-                  {o.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      {/* Error State */}
+      {isError && (
+        <div className="rounded-lg bg-red-50 border border-red-200 p-4 flex items-center gap-3">
+          <AlertCircle className="text-red-600 shrink-0" size={20} />
+          <p className="text-sm text-red-700">
+            {error?.data?.message || "Failed to load users. Please try again."}
+          </p>
         </div>
-      </div>
+      )}
+
+      {/* Filter Bar */}
+      <FilterCard
+        searchValue={searchInput}
+        onSearchChange={handleSearchChange}
+        onClearSearch={handleClearSearch}
+        searchPlaceholder="Search by name or email..."
+        filterValue={statusFilter}
+        onFilterChange={handleStatusFilter}
+        filterOptions={STATUS_OPTIONS}
+        filterLabel="Status"
+      />
 
       {/* Table */}
       {isLoading ? (
         <UserTableSkeleton rows={LIMIT} />
       ) : users.length === 0 && !isError ? (
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-8 text-center">
-          <p className="text-slate-500">No users found.</p>
+          <p className="text-slate-500 text-sm">No users found</p>
         </div>
       ) : (
         <div
           className={cn(
-            "rounded-lg border border-slate-200 bg-white transition-opacity",
+            "rounded-lg border border-slate-200 bg-white transition-opacity overflow-hidden shadow-sm hover:shadow-md",
             isFetching && "opacity-60",
           )}
         >
           <Table>
             <TableHeader className="bg-slate-50">
               <TableRow>
-                <TableHead>User</TableHead>
-                <TableHead className="hidden sm:table-cell">Email</TableHead>
-                <TableHead className="hidden lg:table-cell">Location</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="hidden md:table-cell">Joined</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-xs font-semibold">User</TableHead>
+                <TableHead className="hidden sm:table-cell text-xs font-semibold">
+                  Email
+                </TableHead>
+                <TableHead className="hidden lg:table-cell text-xs font-semibold">
+                  Location
+                </TableHead>
+                <TableHead className="text-xs font-semibold">Status</TableHead>
+                <TableHead className="hidden md:table-cell text-xs font-semibold">
+                  Joined
+                </TableHead>
+                <TableHead className="text-right text-xs font-semibold">
+                  Actions
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -210,12 +205,15 @@ const Users = () => {
                 const action = ACTION_MAP[user.status?.toUpperCase()];
                 const ActionIcon = action?.icon ?? Lock;
                 return (
-                  <TableRow key={user.id}>
+                  <TableRow
+                    key={user.id}
+                    className="hover:bg-slate-50 transition-colors"
+                  >
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <UserAvatar name={user.name} src={user.profileImage} />
                         <div>
-                          <div className="text-sm font-semibold text-slate-800">
+                          <div className="text-sm font-semibold text-slate-900">
                             {user.name}
                           </div>
                           <div className="text-xs text-slate-500">
@@ -227,20 +225,13 @@ const Users = () => {
                     <TableCell className="hidden text-sm text-slate-600 sm:table-cell">
                       {user.email}
                     </TableCell>
-                    <TableCell className="hidden text-sm text-slate-600 lg:table-cell">
+                    <TableCell className="hidden text-sm text-slate-600 lg:table-cell truncate">
                       {user.location ?? "—"}
                     </TableCell>
                     <TableCell>
-                      <span
-                        className={cn(
-                          "inline-block rounded-full px-2.5 py-1 text-xs font-medium",
-                          statusColour(user.status),
-                        )}
-                      >
-                        {user.status}
-                      </span>
+                      <StatusBadge status={user.status} size="sm" />
                     </TableCell>
-                    <TableCell className="hidden text-xs text-slate-500 md:table-cell">
+                    <TableCell className="hidden text-xs text-slate-500 md:table-cell whitespace-nowrap">
                       {user.createdAt
                         ? new Date(user.createdAt).toLocaleDateString()
                         : "—"}
@@ -251,6 +242,7 @@ const Users = () => {
                           variant="ghost"
                           size="sm"
                           onClick={() => setShowUserDetail(user)}
+                          className="hover:bg-blue-50 hover:text-blue-600"
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
@@ -259,6 +251,7 @@ const Users = () => {
                             variant="ghost"
                             size="sm"
                             onClick={() => openActionConfirm(user)}
+                            className="hover:bg-amber-50 hover:text-amber-600"
                           >
                             <ActionIcon className="h-4 w-4" />
                           </Button>
@@ -284,7 +277,7 @@ const Users = () => {
                   className={cn(page === 1 && "pointer-events-none opacity-50")}
                 />
               </PaginationItem>
-              {Array.from({ length: totalPages }).map((_, i) => (
+              {Array.from({ length: Math.min(totalPages, 5) }).map((_, i) => (
                 <PaginationItem key={i + 1}>
                   <PaginationLink
                     isActive={page === i + 1}
@@ -295,6 +288,9 @@ const Users = () => {
                   </PaginationLink>
                 </PaginationItem>
               ))}
+              {totalPages > 5 && (
+                <span className="text-slate-500 text-sm px-2">...</span>
+              )}
               <PaginationItem>
                 <PaginationNext
                   onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
@@ -315,18 +311,22 @@ const Users = () => {
       >
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 mb-4">
               <UserAvatar
                 name={showUserDetail?.name}
                 src={showUserDetail?.profileImage}
               />
               <div>
-                <DialogTitle>{showUserDetail?.name}</DialogTitle>
-                <DialogDescription>{showUserDetail?.email}</DialogDescription>
+                <DialogTitle className="text-lg">
+                  {showUserDetail?.name}
+                </DialogTitle>
+                <DialogDescription className="text-xs">
+                  {showUserDetail?.email}
+                </DialogDescription>
               </div>
             </div>
           </DialogHeader>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {[
               { Icon: Mail, label: "Email", value: showUserDetail?.email },
               { Icon: Phone, label: "Phone", value: showUserDetail?.phone },
@@ -343,30 +343,27 @@ const Users = () => {
                   : undefined,
               },
             ].map(({ Icon, label, value }) => (
-              <div key={label} className="flex items-center gap-3">
-                <Icon className="h-4 w-4 text-slate-400" />
+              <div key={label} className="flex items-start gap-3">
+                <Icon className="h-4 w-4 text-slate-400 mt-0.5 shrink-0" />
                 <div>
-                  <div className="text-xs text-slate-500">{label}</div>
-                  <div className="text-sm text-slate-700">{value ?? "—"}</div>
+                  <div className="text-xs font-medium text-slate-500">
+                    {label}
+                  </div>
+                  <div className="text-sm text-slate-700 font-medium">
+                    {value ?? "—"}
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-          <div className="mt-4 flex items-center justify-between border-t border-slate-200 pt-4">
+          <div className="mt-6 flex items-center justify-between border-t border-slate-200 pt-4">
             <div>
               <div className="text-xs text-slate-500">Role</div>
-              <div className="text-sm font-medium text-slate-900">
+              <div className="text-sm font-semibold text-slate-900">
                 {showUserDetail?.role ?? "—"}
               </div>
             </div>
-            <span
-              className={cn(
-                "inline-block rounded-full px-2.5 py-1 text-xs font-medium",
-                statusColour(showUserDetail?.status),
-              )}
-            >
-              {showUserDetail?.status}
-            </span>
+            <StatusBadge status={showUserDetail?.status} />
           </div>
         </DialogContent>
       </Dialog>
@@ -379,16 +376,22 @@ const Users = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <UserCheck className="h-5 w-5" />
+              <UserCheck className="h-5 w-5 text-amber-600" />
               {pendingAction?.label} User?
             </DialogTitle>
             <DialogDescription>
               Are you sure you want to {pendingAction?.label?.toLowerCase()}{" "}
-              <strong>{pendingAction?.user?.name}</strong>? Their status will
-              change to <strong>{pendingAction?.nextStatus}</strong>.
+              <strong className="text-slate-900">
+                {pendingAction?.user?.name}
+              </strong>
+              ? Their status will change to{" "}
+              <strong className="text-slate-900">
+                {pendingAction?.nextStatus}
+              </strong>
+              .
             </DialogDescription>
           </DialogHeader>
-          <div className="flex gap-2 pt-2">
+          <div className="flex gap-2 pt-4">
             <Button
               variant="outline"
               onClick={() => setPendingAction(null)}
@@ -399,7 +402,7 @@ const Users = () => {
             <Button
               onClick={confirmAction}
               disabled={actionLoading}
-              className="flex-1"
+              className="flex-1 bg-amber-600 hover:bg-amber-700"
             >
               {actionLoading ? "Updating..." : "Confirm"}
             </Button>
