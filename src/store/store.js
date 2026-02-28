@@ -4,6 +4,7 @@ import { authApi } from "./apis/authApi";
 import { cmsApi } from "./apis/cmsApi";
 import { categoryApi } from "./apis/categoryApi";
 import { lockerAddressApi } from "./apis/lockerAddressApi";
+import { adminApi } from "./apis/adminApi";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     [cmsApi.reducerPath]: cmsApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
     [lockerAddressApi.reducerPath]: lockerAddressApi.reducer,
+    [adminApi.reducerPath]: adminApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -19,5 +21,6 @@ export const store = configureStore({
       cmsApi.middleware,
       categoryApi.middleware,
       lockerAddressApi.middleware,
+      adminApi.middleware,
     ),
 });

@@ -8,6 +8,7 @@ import {
   Eye,
   Lock,
   Unlock,
+  UserCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { Button } from "@/components/ui/button";
@@ -34,153 +35,110 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
+  useGetAllUsersQuery,
+  useUpdateUserActionMutation,
+} from "@/store/apis/adminApi";
+import { useDebounce } from "@/hooks/useDebounce";
+import { getInitials } from "@/lib/utils/getInitials";
+import { UserTableSkeleton } from "@/components/skeletons/DashboardSkeletons";
 
-// Demo data
-const demoUsers = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "john@example.com",
-    phone: "+1-555-0101",
-    status: "Active",
-    joinDate: "2024-01-15",
-    location: "New York, USA",
-    purchases: 24,
-    totalSpent: "$5,420.00",
-    avatar: "🧑",
-    blocked: false,
-  },
-  {
-    id: 2,
-    name: "Sarah Johnson",
-    email: "sarah@example.com",
-    phone: "+1-555-0102",
-    status: "Active",
-    joinDate: "2024-02-20",
-    location: "Los Angeles, USA",
-    purchases: 18,
-    totalSpent: "$3,890.00",
-    avatar: "👩",
-    blocked: false,
-  },
-  {
-    id: 3,
-    name: "Michael Chen",
-    email: "michael@example.com",
-    phone: "+1-555-0103",
-    status: "Inactive",
-    joinDate: "2024-03-10",
-    location: "San Francisco, USA",
-    purchases: 8,
-    totalSpent: "$1,250.00",
-    avatar: "👨",
-    blocked: true,
-  },
-  {
-    id: 4,
-    name: "Emma Wilson",
-    email: "emma@example.com",
-    phone: "+1-555-0104",
-    status: "Active",
-    joinDate: "2024-01-25",
-    location: "Chicago, USA",
-    purchases: 32,
-    totalSpent: "$7,650.00",
-    avatar: "👩",
-    blocked: false,
-  },
-  {
-    id: 5,
-    name: "David Brown",
-    email: "david@example.com",
-    phone: "+1-555-0105",
-    status: "Active",
-    joinDate: "2024-04-05",
-    location: "Miami, USA",
-    purchases: 15,
-    totalSpent: "$2,340.00",
-    avatar: "🧑",
-    blocked: false,
-  },
-  {
-    id: 6,
-    name: "Lisa Anderson",
-    email: "lisa@example.com",
-    phone: "+1-555-0106",
-    status: "Inactive",
-    joinDate: "2024-02-14",
-    location: "Seattle, USA",
-    purchases: 5,
-    totalSpent: "$890.00",
-    avatar: "👩",
-    blocked: false,
-  },
-  {
-    id: 7,
-    name: "James Martinez",
-    email: "james@example.com",
-    phone: "+1-555-0107",
-    status: "Active",
-    joinDate: "2024-03-20",
-    location: "Austin, USA",
-    purchases: 28,
-    totalSpent: "$6,120.00",
-    avatar: "👨",
-    blocked: false,
-  },
-  {
-    id: 8,
-    name: "Sophie Taylor",
-    email: "sophie@example.com",
-    phone: "+1-555-0108",
-    status: "Active",
-    joinDate: "2024-01-30",
-    location: "Boston, USA",
-    purchases: 21,
-    totalSpent: "$4,560.00",
-    avatar: "👩",
-    blocked: false,
-  },
+const STATUS_OPTIONS = [
+  { label: "All Users", value: "ALL" },
+  { label: "Active", value: "ACTIVE" },
+  { label: "Inactive", value: "INACTIVE" },
+  { label: "Blocked", value: "BLOCKED" },
 ];
 
-const Users = () => {
-  const [users, setUsers] = useState(demoUsers);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All");
-  const [showUserDetail, setShowUserDetail] = useState(null);
-  const [showBlockConfirm, setShowBlockConfirm] = useState(null);
+const ACTION_MAP = {
+  ACTIVE: { next: "INACTIVE", label: "Deactivate", icon: Lock },
+  INACTIVE: { next: "ACTIVE", label: "Activate", icon: Unlock },
+  SUSPENDED: { next: "ACTIVE", label: "Activate", icon: Unlock },
+  BLOCKED: { next: "INACTIVE", label: "Deactivate", icon: Lock },
+};
 
-  const filteredUsers = users.filter(
-    (user) =>
-      (user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      (statusFilter === "All" || user.status === statusFilter),
+const statusColour = (status) => {
+  const s = status?.toUpperCase();
+  if (s === "ACTIVE") return "bg-green-100 text-green-700";
+  if (s === "INACTIVE") return "bg-slate-100 text-slate-600";
+  if (s === "SUSPENDED" || s === "BLOCKED") return "bg-red-100 text-red-700";
+  return "bg-slate-100 text-slate-600";
+};
+
+const UserAvatar = ({ name, src }) => {
+  if (src)
+    return (
+      <img src={src} alt={name} className="h-9 w-9 rounded-full object-cover" />
+    );
+  return (
+    <div className="h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-xs font-semibold text-blue-700">
+      {getInitials(name)}
+    </div>
   );
+};
 
-  const handleToggleBlock = (userId) => {
-    const user = users.find((u) => u.id === userId);
-    if (user) {
-      setShowBlockConfirm(user);
-    }
+const ErrorBlock = ({ message }) => (
+  <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+    {message || "Failed to load users. Please try again."}
+  </div>
+);
+
+const LIMIT = 10;
+
+const Users = () => {
+  const [searchInput, setSearchInput] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [page, setPage] = useState(1);
+  const [showUserDetail, setShowUserDetail] = useState(null);
+  const [pendingAction, setPendingAction] = useState(null);
+
+  const searchTerm = useDebounce(searchInput, 400);
+
+  const { data, isLoading, isFetching, isError } = useGetAllUsersQuery({
+    page,
+    limit: LIMIT,
+    status: statusFilter,
+    searchTerm: searchTerm || undefined,
+  });
+
+  const [updateUserAction, { isLoading: actionLoading }] =
+    useUpdateUserActionMutation();
+
+  const users = data?.data?.result ?? [];
+  const meta = data?.data?.meta ?? {};
+  const totalPages = meta.totalPage ?? 1;
+
+  const handleSearchChange = (e) => {
+    setSearchInput(e.target.value);
+    setPage(1);
   };
 
-  const confirmToggleBlock = () => {
-    if (showBlockConfirm) {
-      setUsers((prev) =>
-        prev.map((user) =>
-          user.id === showBlockConfirm.id
-            ? { ...user, blocked: !user.blocked }
-            : user,
-        ),
-      );
-      setShowBlockConfirm(null);
-    }
+  const handleStatusFilter = (val) => {
+    setStatusFilter(val);
+    setPage(1);
   };
 
-  const getStatusColor = (status) => {
-    return status === "Active"
-      ? "bg-green-100 text-green-700"
-      : "bg-red-100 text-red-700";
+  const openActionConfirm = (user) => {
+    const action = ACTION_MAP[user.status?.toUpperCase()];
+    if (!action) return;
+    setPendingAction({ user, nextStatus: action.next, label: action.label });
+  };
+
+  const confirmAction = async () => {
+    if (!pendingAction) return;
+    await updateUserAction({
+      userId: pendingAction.user.id,
+      status: pendingAction.nextStatus,
+    });
+    setPendingAction(null);
   };
 
   return (
@@ -193,138 +151,164 @@ const Users = () => {
         </p>
       </div>
 
-      {/* Stats */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-lg border border-slate-200 bg-white p-4">
-          <div className="text-sm text-slate-600">Total Users</div>
-          <div className="mt-2 text-2xl font-bold text-slate-800">
-            {users.length}
-          </div>
-        </div>
-        <div className="rounded-lg border border-slate-200 bg-white p-4">
-          <div className="text-sm text-slate-600">Active Users</div>
-          <div className="mt-2 text-2xl font-bold text-green-600">
-            {users.filter((u) => u.status === "Active").length}
-          </div>
-        </div>
-        <div className="rounded-lg border border-slate-200 bg-white p-4">
-          <div className="text-sm text-slate-600">Inactive Users</div>
-          <div className="mt-2 text-2xl font-bold text-red-600">
-            {users.filter((u) => u.status === "Inactive").length}
-          </div>
-        </div>
-        <div className="rounded-lg border border-slate-200 bg-white p-4">
-          <div className="text-sm text-slate-600">Total Revenue</div>
-          <div className="mt-2 text-2xl font-bold text-brand-600">
-            $
-            {users
-              .reduce((sum, u) => sum + parseInt(u.totalSpent.slice(1)), 0)
-              .toLocaleString()}
-          </div>
-        </div>
-      </div>
+      {isError && <ErrorBlock />}
 
       {/* Controls */}
-      <div className="space-y-4 rounded-lg border border-slate-200 bg-white p-4">
+      <div className="rounded-lg border border-slate-200 bg-white p-4">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
             <Input
-              type="text"
               placeholder="Search by name or email..."
               className="pl-10"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={searchInput}
+              onChange={handleSearchChange}
             />
           </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-40">
+          <Select value={statusFilter} onValueChange={handleStatusFilter}>
+            <SelectTrigger className="w-full sm:w-44">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="All">All Users</SelectItem>
-              <SelectItem value="Active">Active</SelectItem>
-              <SelectItem value="Inactive">Inactive</SelectItem>
+              {STATUS_OPTIONS.map((o) => (
+                <SelectItem key={o.value} value={o.value}>
+                  {o.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
       </div>
 
       {/* Table */}
-      <div className="rounded-lg border border-slate-200 bg-white">
-        <Table>
-          <TableHeader className="bg-slate-50">
-            <TableRow>
-              <TableHead>User</TableHead>
-              <TableHead className="hidden sm:table-cell">Email</TableHead>
-              <TableHead className="hidden lg:table-cell">Location</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Purchases</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredUsers.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell>
-                  <div className="flex items-center gap-3">
-                    <div className="text-2xl">{user.avatar}</div>
-                    <div>
-                      <div className="text-sm font-semibold text-slate-800">
-                        {user.name}
-                      </div>
-                      <div className="text-xs text-slate-500">{user.phone}</div>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell className="hidden text-sm text-slate-600 sm:table-cell">
-                  {user.email}
-                </TableCell>
-                <TableCell className="hidden text-sm text-slate-600 lg:table-cell">
-                  {user.location}
-                </TableCell>
-                <TableCell>
-                  <span
-                    className={cn(
-                      "inline-block rounded-full px-3 py-1 text-xs font-medium",
-                      getStatusColor(user.status),
-                    )}
-                  >
-                    {user.status}
-                  </span>
-                </TableCell>
-                <TableCell className="text-sm font-semibold text-slate-800">
-                  {user.purchases}
-                </TableCell>
-                <TableCell className="text-right">
-                  <div className="flex items-center justify-end gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setShowUserDetail(user)}
-                    >
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleToggleBlock(user.id)}
-                    >
-                      {user.blocked ? (
-                        <Unlock className="h-4 w-4" />
-                      ) : (
-                        <Lock className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
-                </TableCell>
+      {isLoading ? (
+        <UserTableSkeleton rows={LIMIT} />
+      ) : users.length === 0 && !isError ? (
+        <div className="rounded-lg border border-slate-200 bg-slate-50 p-8 text-center">
+          <p className="text-slate-500">No users found.</p>
+        </div>
+      ) : (
+        <div
+          className={cn(
+            "rounded-lg border border-slate-200 bg-white transition-opacity",
+            isFetching && "opacity-60",
+          )}
+        >
+          <Table>
+            <TableHeader className="bg-slate-50">
+              <TableRow>
+                <TableHead>User</TableHead>
+                <TableHead className="hidden sm:table-cell">Email</TableHead>
+                <TableHead className="hidden lg:table-cell">Location</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="hidden md:table-cell">Joined</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            </TableHeader>
+            <TableBody>
+              {users.map((user) => {
+                const action = ACTION_MAP[user.status?.toUpperCase()];
+                const ActionIcon = action?.icon ?? Lock;
+                return (
+                  <TableRow key={user.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <UserAvatar name={user.name} src={user.profileImage} />
+                        <div>
+                          <div className="text-sm font-semibold text-slate-800">
+                            {user.name}
+                          </div>
+                          <div className="text-xs text-slate-500">
+                            {user.phone ?? "—"}
+                          </div>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden text-sm text-slate-600 sm:table-cell">
+                      {user.email}
+                    </TableCell>
+                    <TableCell className="hidden text-sm text-slate-600 lg:table-cell">
+                      {user.location ?? "—"}
+                    </TableCell>
+                    <TableCell>
+                      <span
+                        className={cn(
+                          "inline-block rounded-full px-2.5 py-1 text-xs font-medium",
+                          statusColour(user.status),
+                        )}
+                      >
+                        {user.status}
+                      </span>
+                    </TableCell>
+                    <TableCell className="hidden text-xs text-slate-500 md:table-cell">
+                      {user.createdAt
+                        ? new Date(user.createdAt).toLocaleDateString()
+                        : "—"}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setShowUserDetail(user)}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        {action && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => openActionConfirm(user)}
+                          >
+                            <ActionIcon className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
+      )}
 
-      {/* User Detail Modal */}
+      {/* Pagination */}
+      {!isLoading && totalPages > 1 && (
+        <div className="flex justify-center">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                  className={cn(page === 1 && "pointer-events-none opacity-50")}
+                />
+              </PaginationItem>
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <PaginationItem key={i + 1}>
+                  <PaginationLink
+                    isActive={page === i + 1}
+                    onClick={() => setPage(i + 1)}
+                    className="cursor-pointer"
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+                  className={cn(
+                    page === totalPages && "pointer-events-none opacity-50",
+                  )}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
+
+      {/* User Detail Dialog */}
       <Dialog
         open={!!showUserDetail}
         onOpenChange={(open) => !open && setShowUserDetail(null)}
@@ -332,110 +316,92 @@ const Users = () => {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <div className="flex items-center gap-4">
-              <div className="text-4xl">{showUserDetail?.avatar}</div>
+              <UserAvatar
+                name={showUserDetail?.name}
+                src={showUserDetail?.profileImage}
+              />
               <div>
                 <DialogTitle>{showUserDetail?.name}</DialogTitle>
                 <DialogDescription>{showUserDetail?.email}</DialogDescription>
               </div>
             </div>
           </DialogHeader>
-
           <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <Mail className="h-4 w-4 text-slate-400" />
-              <div>
-                <div className="text-xs text-slate-500">Email</div>
-                <div className="text-sm text-slate-700">
-                  {showUserDetail?.email}
+            {[
+              { Icon: Mail, label: "Email", value: showUserDetail?.email },
+              { Icon: Phone, label: "Phone", value: showUserDetail?.phone },
+              {
+                Icon: MapPin,
+                label: "Location",
+                value: showUserDetail?.location,
+              },
+              {
+                Icon: Clock,
+                label: "Joined",
+                value: showUserDetail?.createdAt
+                  ? new Date(showUserDetail.createdAt).toLocaleDateString()
+                  : undefined,
+              },
+            ].map(({ Icon, label, value }) => (
+              <div key={label} className="flex items-center gap-3">
+                <Icon className="h-4 w-4 text-slate-400" />
+                <div>
+                  <div className="text-xs text-slate-500">{label}</div>
+                  <div className="text-sm text-slate-700">{value ?? "—"}</div>
                 </div>
               </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Phone className="h-4 w-4 text-slate-400" />
-              <div>
-                <div className="text-xs text-slate-500">Phone</div>
-                <div className="text-sm text-slate-700">
-                  {showUserDetail?.phone}
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <MapPin className="h-4 w-4 text-slate-400" />
-              <div>
-                <div className="text-xs text-slate-500">Location</div>
-                <div className="text-sm text-slate-700">
-                  {showUserDetail?.location}
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Clock className="h-4 w-4 text-slate-400" />
-              <div>
-                <div className="text-xs text-slate-500">Join Date</div>
-                <div className="text-sm text-slate-700">
-                  {showUserDetail?.joinDate}
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
-
-          <div className="mt-4 grid grid-cols-3 gap-2 border-t border-slate-200 pt-4">
-            <div className="text-center">
-              <div className="text-lg font-bold text-brand-600">
-                {showUserDetail?.purchases}
+          <div className="mt-4 flex items-center justify-between border-t border-slate-200 pt-4">
+            <div>
+              <div className="text-xs text-slate-500">Role</div>
+              <div className="text-sm font-medium text-slate-900">
+                {showUserDetail?.role ?? "—"}
               </div>
-              <div className="text-xs text-slate-500">Purchases</div>
             </div>
-            <div className="text-center">
-              <div className="text-lg font-bold text-brand-600">
-                {showUserDetail?.totalSpent}
-              </div>
-              <div className="text-xs text-slate-500">Total Spent</div>
-            </div>
-            <div className="text-center">
-              <span
-                className={cn(
-                  "inline-block rounded-full px-2 py-1 text-xs font-medium",
-                  getStatusColor(showUserDetail?.status),
-                )}
-              >
-                {showUserDetail?.status}
-              </span>
-            </div>
+            <span
+              className={cn(
+                "inline-block rounded-full px-2.5 py-1 text-xs font-medium",
+                statusColour(showUserDetail?.status),
+              )}
+            >
+              {showUserDetail?.status}
+            </span>
           </div>
         </DialogContent>
       </Dialog>
-      {/* Block/Unblock Confirmation Modal */}
+
+      {/* Action Confirm Dialog */}
       <Dialog
-        open={!!showBlockConfirm}
-        onOpenChange={(open) => !open && setShowBlockConfirm(null)}
+        open={!!pendingAction}
+        onOpenChange={(open) => !open && setPendingAction(null)}
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              {showBlockConfirm?.blocked ? "Unblock User?" : "Block User?"}
+            <DialogTitle className="flex items-center gap-2">
+              <UserCheck className="h-5 w-5" />
+              {pendingAction?.label} User?
             </DialogTitle>
             <DialogDescription>
-              {showBlockConfirm?.blocked
-                ? `Are you sure you want to unblock ${showBlockConfirm?.name}? They will be able to access their account again.`
-                : `Are you sure you want to block ${showBlockConfirm?.name}? They will not be able to access their account.`}
+              Are you sure you want to {pendingAction?.label?.toLowerCase()}{" "}
+              <strong>{pendingAction?.user?.name}</strong>? Their status will
+              change to <strong>{pendingAction?.nextStatus}</strong>.
             </DialogDescription>
           </DialogHeader>
-
-          <div className="flex gap-2">
+          <div className="flex gap-2 pt-2">
             <Button
               variant="outline"
-              onClick={() => setShowBlockConfirm(null)}
+              onClick={() => setPendingAction(null)}
               className="flex-1"
             >
               Cancel
             </Button>
             <Button
-              onClick={confirmToggleBlock}
+              onClick={confirmAction}
+              disabled={actionLoading}
               className="flex-1"
-              variant={showBlockConfirm?.blocked ? "default" : "destructive"}
             >
-              {showBlockConfirm?.blocked ? "Unblock" : "Block"}
+              {actionLoading ? "Updating..." : "Confirm"}
             </Button>
           </div>
         </DialogContent>
