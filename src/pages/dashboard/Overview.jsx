@@ -38,21 +38,45 @@ const CURRENT_YEAR = new Date().getFullYear();
 
 // API returns full month names — keep both forms for label vs. key mapping
 const MONTHS_FULL = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 const MONTHS_SHORT = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
 // Transform API data to chart-friendly format
 // API: [{ month: "January", year: 2026, count: 2 }, ...]
 const transformChartData = (data = []) => {
-  const map = new Map(data.map((d) => [d.month, d.count]));
+  // Ensure all months are present, fill missing with 0
+  const monthCountMap = {};
+  data.forEach((d) => {
+    monthCountMap[d.month] = d.count;
+  });
   return MONTHS_FULL.map((fullMonth, index) => ({
-    month: MONTHS_SHORT[index],   // label on X-axis
-    value: map.get(fullMonth) ?? 0,
+    month: MONTHS_SHORT[index], // label on X-axis
+    value: monthCountMap[fullMonth] ?? 0,
   }));
 };
 

@@ -49,8 +49,8 @@ const Orders = () => {
   const { data, isLoading, isFetching, isError, error } = useGetAllOrdersQuery({
     page,
     limit: LIMIT,
-    searchTerm: searchTerm || undefined,
-    status: statusFilter,
+    searchTerm: searchTerm?.trim() ? searchTerm : undefined,
+    status: statusFilter === "ALL" ? undefined : statusFilter,
     sortOrder,
   });
 
@@ -59,8 +59,7 @@ const Orders = () => {
   const totalPages = meta.totalPage ?? 1;
 
   const handleSearchChange = (e) => {
-    const val = e.target.value;
-    setSearchInput(val);
+    setSearchInput(e.target.value);
     setPage(1);
   };
 

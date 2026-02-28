@@ -5,7 +5,7 @@ import { baseQueryWithReauth } from "../baseQuery";
 export const adminApi = createApi({
   reducerPath: "adminApi",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["AdminOverview", "GrowthStat", "Users", "Products", "Orders", "Payments"],
+  tagTypes: ["AdminOverview", "GrowthStat", "Users", "Products", "Orders"],
   // Cache data for 5 minutes by default
   keepUnusedDataFor: 300,
   endpoints: (builder) => ({
@@ -40,6 +40,7 @@ export const adminApi = createApi({
         params.set("page", String(page));
         params.set("limit", String(limit));
         if (status && status !== "ALL") params.set("status", status);
+        else params.set("status", "ALL");
         if (searchTerm) params.set("searchTerm", searchTerm);
         return { url: `/admin/all-users?${params.toString()}`, method: "GET" };
       },
@@ -91,12 +92,15 @@ export const adminApi = createApi({
         page = 1,
         limit = 8,
         searchTerm,
+        isAvailable,
         isSold,
       } = {}) => {
         const params = new URLSearchParams();
         params.set("page", String(page));
         params.set("limit", String(limit));
         if (searchTerm) params.set("searchTerm", searchTerm);
+        if (isAvailable !== undefined)
+          params.set("isAvailable", String(isAvailable));
         if (isSold !== undefined) params.set("isSold", String(isSold));
         return {
           url: `/admin/all-products?${params.toString()}`,
@@ -145,23 +149,6 @@ export const adminApi = createApi({
             ]
           : [{ type: "Orders", id: "LIST" }],
     }),
-
-    // ─── Payment History ──────────────────────────────────────────────────
-    // sortOrder: "asc" | "desc"
-    getPaymentHistory: builder.query({
-      query: ({ page = 1, limit = 8, searchTerm, sortOrder = "desc" } = {}) => {
-        const params = new URLSearchParams();
-        params.set("page", String(page));
-        params.set("limit", String(limit));
-        params.set("sortOrder", sortOrder);
-        if (searchTerm) params.set("searchTerm", searchTerm);
-        return {
-          url: `/admin/al-payment-history?${params.toString()}`,
-          method: "GET",
-        };
-      },
-      providesTags: [{ type: "Payments", id: "LIST" }],
-    }),
   }),
 });
 
@@ -172,5 +159,4 @@ export const {
   useUpdateUserActionMutation,
   useGetAllProductsQuery,
   useGetAllOrdersQuery,
-  useGetPaymentHistoryQuery,
 } = adminApi;

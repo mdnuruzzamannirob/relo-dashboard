@@ -43,8 +43,15 @@ const Products = () => {
   const queryParams = {
     page,
     limit: LIMIT,
-    searchTerm: searchTerm || undefined,
-    isSold: availFilter === "ALL" ? undefined : availFilter === "SOLD",
+    searchTerm: searchTerm?.trim() ? searchTerm : undefined,
+    isAvailable:
+      availFilter === "ALL" ? undefined : availFilter === "AVAILABLE",
+    isSold:
+      availFilter === "SOLD"
+        ? true
+        : availFilter === "AVAILABLE"
+          ? false
+          : undefined,
   };
 
   const { data, isLoading, isFetching, isError, error } =
@@ -55,8 +62,7 @@ const Products = () => {
   const totalPages = meta.totalPage ?? 1;
 
   const handleSearchChange = (e) => {
-    const val = e.target.value;
-    setSearchInput(val);
+    setSearchInput(e.target.value);
     setPage(1);
   };
 
