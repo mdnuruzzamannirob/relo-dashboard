@@ -239,6 +239,7 @@ const Payments = () => {
     setCurrentPage(1);
   };
 
+  const [sortOrder, setSortOrder] = useState("desc");
   return (
     <div className="space-y-6">
       {/* Header */}
