@@ -11,6 +11,8 @@ let logoutInProgress = false;
 export const baseQuery = fetchBaseQuery({
   baseUrl: API_URL,
   prepareHeaders: (headers) => {
+    headers.set("ngrok-skip-browser-warning", "true");
+
     // Get token from localStorage dynamically
     const token =
       typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
