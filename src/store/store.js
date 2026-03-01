@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/userSlice";
+import chatReducer from "./slices/chatSlice";
 import { authApi } from "./apis/authApi";
 import { cmsApi } from "./apis/cmsApi";
 import { categoryApi } from "./apis/categoryApi";
@@ -9,6 +10,7 @@ import { adminApi } from "./apis/adminApi";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    chat: chatReducer,
     [authApi.reducerPath]: authApi.reducer,
     [cmsApi.reducerPath]: cmsApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
