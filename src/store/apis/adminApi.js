@@ -5,7 +5,14 @@ import { baseQueryWithReauth } from "../baseQuery";
 export const adminApi = createApi({
   reducerPath: "adminApi",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["AdminOverview", "GrowthStat", "Users", "Products", "Orders"],
+  tagTypes: [
+    "AdminOverview",
+    "GrowthStat",
+    "Users",
+    "Products",
+    "Orders",
+    "PaymentHistory",
+  ],
   // Cache data for 5 minutes by default
   keepUnusedDataFor: 300,
   endpoints: (builder) => ({
@@ -149,6 +156,33 @@ export const adminApi = createApi({
             ]
           : [{ type: "Orders", id: "LIST" }],
     }),
+
+    // ─── All Payment History ─────────────────────────────────────────────
+    // sortOrder: "asc" | "desc"
+    getAllPaymentHistory: builder.query({
+      query: ({ page = 1, limit = 8, searchTerm, sortOrder = "desc" } = {}) => {
+        const params = new URLSearchParams();
+        params.set("page", String(page));
+        params.set("limit", String(limit));
+        params.set("sortOrder", sortOrder);
+        if (searchTerm) params.set("searchTerm", searchTerm);
+
+        return {
+          url: `/admin/all-payment-history?${params.toString()}`,
+          method: "GET",
+        };
+      },
+      providesTags: (result) =>
+        result?.data?.result?.length
+          ? [
+              { type: "PaymentHistory", id: "LIST" },
+              ...result.data.result.map((p) => ({
+                type: "PaymentHistory",
+                id: p.id,
+              })),
+            ]
+          : [{ type: "PaymentHistory", id: "LIST" }],
+    }),
   }),
 });
 
@@ -159,4 +193,5 @@ export const {
   useUpdateUserActionMutation,
   useGetAllProductsQuery,
   useGetAllOrdersQuery,
+  useGetAllPaymentHistoryQuery,
 } = adminApi;

@@ -1,7 +1,15 @@
-import { useState } from "react";
-import { Search, Eye, TrendingUp } from "lucide-react";
+import { useMemo, useState } from "react";
+import {
+  AlertCircle,
+  Eye,
+  Receipt,
+  Search,
+  TrendingUp,
+  Wallet,
+} from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,21 +18,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
   Pagination,
   PaginationContent,
   PaginationItem,
@@ -32,403 +25,318 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useDebounce } from "@/hooks/useDebounce";
+import {
+  PaymentTableSkeleton,
+  StatsRowSkeleton,
+} from "@/components/skeletons/DashboardSkeletons";
+import { useGetAllPaymentHistoryQuery } from "@/store/apis/adminApi";
 
-// Demo data
-const demoPayments = [
-  {
-    id: "PAY-001",
-    orderID: "ORD-001",
-    productName: "Woman Bag",
-    amount: "$120.00",
-    paymentMethod: "Credit Card",
-    status: "Completed",
-    date: "Jan 10, 2024",
-    paymentDate: "Jan 10, 2024",
-    buyerName: "John Doe",
-    sellerName: "Emma Wilson",
-    image: "👜",
-  },
-  {
-    id: "PAY-002",
-    orderID: "ORD-002",
-    productName: "Woman t-shirt",
-    amount: "$58.00",
-    paymentMethod: "PayPal",
-    status: "Completed",
-    date: "Jan 10, 2024",
-    paymentDate: "Jan 10, 2024",
-    buyerName: "Sarah Johnson",
-    sellerName: "Emma Wilson",
-    image: "👕",
-  },
-  {
-    id: "PAY-003",
-    orderID: "ORD-003",
-    productName: "Man t-shirt",
-    amount: "$45.00",
-    paymentMethod: "Debit Card",
-    status: "Pending",
-    date: "Jan 10, 2024",
-    paymentDate: "Jan 10, 2024",
-    buyerName: "Mike Brown",
-    sellerName: "Emma Wilson",
-    image: "👔",
-  },
-  {
-    id: "PAY-004",
-    orderID: "ORD-004",
-    productName: "Woman dress",
-    amount: "$95.00",
-    paymentMethod: "Bank Transfer",
-    status: "Completed",
-    date: "Jan 15, 2024",
-    paymentDate: "Jan 15, 2024",
-    buyerName: "Emma Wilson",
-    sellerName: "John Smith",
-    image: "👗",
-  },
-  {
-    id: "PAY-005",
-    orderID: "ORD-005",
-    productName: "Winter Jacket",
-    amount: "$150.00",
-    paymentMethod: "Credit Card",
-    status: "Completed",
-    date: "Jan 12, 2024",
-    paymentDate: "Jan 12, 2024",
-    buyerName: "David Smith",
-    sellerName: "Sarah Johnson",
-    image: "🧥",
-  },
-  {
-    id: "PAY-006",
-    orderID: "ORD-006",
-    productName: "Sports Shoes",
-    amount: "$85.00",
-    paymentMethod: "PayPal",
-    status: "Failed",
-    date: "Jan 18, 2024",
-    paymentDate: "Jan 18, 2024",
-    buyerName: "Lisa Anderson",
-    sellerName: "Mike Brown",
-    image: "👟",
-  },
-  {
-    id: "PAY-007",
-    orderID: "ORD-007",
-    productName: "Casual Hat",
-    amount: "$35.00",
-    paymentMethod: "Debit Card",
-    status: "Completed",
-    date: "Jan 20, 2024",
-    paymentDate: "Jan 20, 2024",
-    buyerName: "James Taylor",
-    sellerName: "Emma Wilson",
-    image: "🎩",
-  },
-  {
-    id: "PAY-008",
-    orderID: "ORD-008",
-    productName: "Summer Shorts",
-    amount: "$65.00",
-    paymentMethod: "Credit Card",
-    status: "Pending",
-    date: "Jan 22, 2024",
-    paymentDate: "Jan 22, 2024",
-    buyerName: "Rachel Green",
-    sellerName: "John Smith",
-    image: "👖",
-  },
-  {
-    id: "PAY-009",
-    orderID: "ORD-009",
-    productName: "Denim Jeans",
-    amount: "$75.00",
-    paymentMethod: "Bank Transfer",
-    status: "Completed",
-    date: "Jan 25, 2024",
-    paymentDate: "Jan 25, 2024",
-    buyerName: "Chris Martin",
-    sellerName: "Sarah Johnson",
-    image: "👖",
-  },
-  {
-    id: "PAY-010",
-    orderID: "ORD-010",
-    productName: "Leather Wallet",
-    amount: "$45.00",
-    paymentMethod: "PayPal",
-    status: "Completed",
-    date: "Jan 26, 2024",
-    paymentDate: "Jan 26, 2024",
-    buyerName: "Jenny White",
-    sellerName: "Mike Brown",
-    image: "👛",
-  },
-  {
-    id: "PAY-011",
-    orderID: "ORD-011",
-    productName: "Casual Shoes",
-    amount: "$65.00",
-    paymentMethod: "Credit Card",
-    status: "Completed",
-    date: "Jan 28, 2024",
-    paymentDate: "Jan 28, 2024",
-    buyerName: "Robert Clark",
-    sellerName: "Emma Wilson",
-    image: "👞",
-  },
-  {
-    id: "PAY-012",
-    orderID: "ORD-012",
-    productName: "T-Shirt Pack",
-    amount: "$85.00",
-    paymentMethod: "Debit Card",
-    status: "Pending",
-    date: "Jan 29, 2024",
-    paymentDate: "Jan 29, 2024",
-    buyerName: "Amanda Lee",
-    sellerName: "John Smith",
-    image: "👕",
-  },
+const SORT_OPTIONS = [
+  { label: "Newest First", value: "desc" },
+  { label: "Oldest First", value: "asc" },
 ];
 
-const ITEMS_PER_PAGE = 6;
+const LIMIT = 8;
+
+const formatDate = (value) => {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+  return date.toLocaleString();
+};
+
+const formatCurrency = (value) => {
+  const amount = Number(value || 0);
+  if (Number.isNaN(amount)) return "$0";
+  return `$${amount.toLocaleString()}`;
+};
 
 const Payments = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchInput, setSearchInput] = useState("");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [page, setPage] = useState(1);
   const [showPaymentDetail, setShowPaymentDetail] = useState(null);
 
-  // Filter payments
-  const filteredPayments = demoPayments.filter((payment) => {
-    const matchesSearch =
-      payment.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.orderID.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.productName.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      statusFilter === "All" || payment.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  const searchTerm = useDebounce(searchInput, 400);
 
-  // Pagination
-  const totalPages = Math.ceil(filteredPayments.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedPayments = filteredPayments.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE,
+  const { data, isLoading, isFetching, isError, error } =
+    useGetAllPaymentHistoryQuery({
+      page,
+      limit: LIMIT,
+      searchTerm: searchTerm?.trim() ? searchTerm : undefined,
+      sortOrder,
+    });
+
+  const payments = useMemo(() => data?.data?.result ?? [], [data]);
+  const meta = data?.data?.meta ?? {};
+  const totalPages = meta.totalPage ?? 1;
+  const total = meta.total ?? 0;
+
+  const totalAmountCurrentPage = useMemo(
+    () => payments.reduce((sum, item) => sum + Number(item.amount || 0), 0),
+    [payments],
   );
 
-  const getStatusColor = (status) => {
-    const statusColors = {
-      Completed: "bg-green-100 text-green-800",
-      Pending: "bg-yellow-100 text-yellow-800",
-      Failed: "bg-red-100 text-red-800",
-    };
-    return statusColors[status] || "bg-slate-100 text-slate-800";
-  };
+  const activeNowCount = useMemo(
+    () =>
+      payments.filter((item) => item?.buyer?.isOnline || item?.seller?.isOnline)
+        .length,
+    [payments],
+  );
 
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-    setCurrentPage(1);
+    setSearchInput(e.target.value);
+    setPage(1);
   };
 
-  const handleStatusChange = (value) => {
-    setStatusFilter(value);
-    setCurrentPage(1);
+  const handleSortChange = (e) => {
+    setSortOrder(e.target.value);
+    setPage(1);
   };
 
-  const [sortOrder, setSortOrder] = useState("desc");
+  const handleClearSearch = () => {
+    setSearchInput("");
+    setPage(1);
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-slate-900">Payments</h1>
-        <p className="mt-1 text-slate-600">
-          Manage and track all payment transactions
+      <div className="space-y-1">
+        <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">
+          Payment History
+        </h1>
+        <p className="text-slate-500 text-sm">
+          Monitor all payment transactions across the platform
         </p>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-lg border border-slate-200 bg-white p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-600">Total Payments</p>
-              <p className="text-2xl font-bold text-slate-900">
-                {demoPayments.length}
-              </p>
+      {isLoading ? (
+        <StatsRowSkeleton count={3} />
+      ) : (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="rounded-lg border border-slate-200 bg-white p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-slate-600">Total Transactions</p>
+                <p className="text-2xl font-bold text-slate-900">{total}</p>
+              </div>
+              <div className="rounded-lg bg-brand-100 p-3">
+                <Receipt className="h-6 w-6 text-brand-600" />
+              </div>
             </div>
-            <div className="rounded-lg bg-blue-100 p-3">
-              <TrendingUp className="h-6 w-6 text-blue-600" />
+          </div>
+
+          <div className="rounded-lg border border-slate-200 bg-white p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-slate-600">This Page Amount</p>
+                <p className="text-2xl font-bold text-emerald-600">
+                  {formatCurrency(totalAmountCurrentPage)}
+                </p>
+              </div>
+              <div className="rounded-lg bg-emerald-100 p-3">
+                <Wallet className="h-6 w-6 text-emerald-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-slate-200 bg-white p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-slate-600">Active Users (Page)</p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {activeNowCount}
+                </p>
+              </div>
+              <div className="rounded-lg bg-blue-100 p-3">
+                <TrendingUp className="h-6 w-6 text-blue-600" />
+              </div>
             </div>
           </div>
         </div>
+      )}
 
-        <div className="rounded-lg border border-slate-200 bg-white p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-600">Completed</p>
-              <p className="text-2xl font-bold text-green-600">
-                {demoPayments.filter((p) => p.status === "Completed").length}
-              </p>
-            </div>
-            <div className="rounded-lg bg-green-100 p-3">
-              <TrendingUp className="h-6 w-6 text-green-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-lg border border-slate-200 bg-white p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-600">Pending</p>
-              <p className="text-2xl font-bold text-yellow-600">
-                {demoPayments.filter((p) => p.status === "Pending").length}
-              </p>
-            </div>
-            <div className="rounded-lg bg-yellow-100 p-3">
-              <TrendingUp className="h-6 w-6 text-yellow-600" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Search and Filter */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-          <Input
-            placeholder="Search by payment ID or order ID..."
-            className="pl-10"
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-        </div>
-        <Select value={statusFilter} onValueChange={handleStatusChange}>
-          <SelectTrigger className="w-full sm:w-48">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="All">All Payments</SelectItem>
-            <SelectItem value="Completed">Completed</SelectItem>
-            <SelectItem value="Pending">Pending</SelectItem>
-            <SelectItem value="Failed">Failed</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Payments Table */}
-      <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-slate-700">Payment ID</TableHead>
-                <TableHead className="text-slate-700">Order ID</TableHead>
-                <TableHead className="text-slate-700">Product</TableHead>
-                <TableHead className="text-slate-700">Amount</TableHead>
-                <TableHead className="text-slate-700">Method</TableHead>
-                <TableHead className="text-slate-700">Status</TableHead>
-                <TableHead className="text-slate-700">Date</TableHead>
-                <TableHead className="text-right text-slate-700">
-                  Actions
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedPayments.map((payment) => (
-                <TableRow key={payment.id} className="hover:bg-slate-50">
-                  <TableCell className="font-medium text-slate-900">
-                    {payment.id}
-                  </TableCell>
-                  <TableCell className="text-slate-700">
-                    {payment.orderID}
-                  </TableCell>
-                  <TableCell className="text-slate-700">
-                    {payment.productName}
-                  </TableCell>
-                  <TableCell className="font-semibold text-slate-900">
-                    {payment.amount}
-                  </TableCell>
-                  <TableCell className="text-slate-700">
-                    {payment.paymentMethod}
-                  </TableCell>
-                  <TableCell>
-                    <span
-                      className={cn(
-                        "rounded-full px-3 py-1 text-xs font-medium",
-                        getStatusColor(payment.status),
-                      )}
-                    >
-                      {payment.status}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-slate-600">
-                    {payment.paymentDate}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <button
-                      onClick={() => setShowPaymentDetail(payment)}
-                      className="inline-flex items-center gap-2 rounded-md bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-100"
-                    >
-                      <Eye className="h-4 w-4" />
-                      View
-                    </button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
-
-      {/* No Results */}
-      {paginatedPayments.length === 0 && (
-        <div className="rounded-lg border border-slate-200 bg-slate-50 p-8 text-center">
-          <p className="text-slate-600">
-            No payments found matching your search
+      {/* Error State */}
+      {isError && (
+        <div className="rounded-lg bg-red-50 border border-red-200 p-4 flex items-center gap-3">
+          <AlertCircle className="text-red-600 shrink-0" size={20} />
+          <p className="text-sm text-red-700">
+            {error?.data?.message ||
+              "Failed to load payment history. Please try again."}
           </p>
         </div>
       )}
 
+      {/* Search + Sort */}
+      <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative w-full sm:max-w-md">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            <Input
+              placeholder="Search by buyer, seller, order ID or product..."
+              className="pl-10 pr-10"
+              value={searchInput}
+              onChange={handleSearchChange}
+            />
+            {searchInput && (
+              <button
+                onClick={handleClearSearch}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                ×
+              </button>
+            )}
+          </div>
+
+          <div className="flex gap-2 items-center">
+            <label className="text-sm font-medium text-slate-600 hidden sm:inline">
+              Sort:
+            </label>
+            <select
+              value={sortOrder}
+              onChange={handleSortChange}
+              className="text-sm border border-slate-200 rounded-md px-3 py-2 text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer bg-white"
+            >
+              {SORT_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Table / States */}
+      {isLoading ? (
+        <PaymentTableSkeleton rows={LIMIT} />
+      ) : payments.length === 0 && !isError ? (
+        <div className="rounded-lg border border-slate-200 bg-slate-50 p-8 text-center">
+          <p className="text-slate-500 text-sm">No payment history found</p>
+        </div>
+      ) : (
+        <div
+          className={cn(
+            "rounded-lg border border-slate-200 bg-white overflow-hidden transition-opacity shadow-sm hover:shadow-md",
+            isFetching && "opacity-60",
+          )}
+        >
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-230">
+              <thead className="bg-slate-50 border-b border-slate-200">
+                <tr>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-600">
+                    Transaction
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-600">
+                    Order
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-600">
+                    Product
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-600">
+                    Amount
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-600">
+                    Buyer / Seller
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-600">
+                    Paid At
+                  </th>
+                  <th className="text-right px-4 py-3 text-xs font-semibold text-slate-600">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {payments.map((payment) => (
+                  <tr
+                    key={payment.id}
+                    className="border-b border-slate-100 hover:bg-slate-50"
+                  >
+                    <td className="px-4 py-3 text-sm font-medium text-slate-900">
+                      <p className="line-clamp-1">
+                        {payment.transaction ?? "—"}
+                      </p>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-slate-700">
+                      {payment.orderId ?? "—"}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-slate-700">
+                      <p className="font-medium text-slate-800 line-clamp-1">
+                        {payment.product?.title ?? "—"}
+                      </p>
+                      <p className="text-xs text-slate-500 line-clamp-1">
+                        {payment.product?.brandName ?? "—"}
+                      </p>
+                    </td>
+                    <td className="px-4 py-3 text-sm font-semibold text-slate-900">
+                      {formatCurrency(payment.amount)}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-slate-700">
+                      <p className="line-clamp-1">
+                        B: {payment.buyer?.name ?? "—"}
+                      </p>
+                      <p className="line-clamp-1 text-xs text-slate-500">
+                        S: {payment.seller?.name ?? "—"}
+                      </p>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-slate-600">
+                      {formatDate(payment.createdAt)}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowPaymentDetail(payment)}
+                        className="gap-1.5 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300"
+                      >
+                        <Eye className="h-4 w-4" />
+                        View
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
       {/* Pagination */}
-      {totalPages > 1 && (
+      {!isLoading && totalPages > 1 && (
         <div className="flex justify-center">
           <Pagination>
             <PaginationContent>
               <PaginationItem>
                 <PaginationPrevious
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.max(prev - 1, 1))
-                  }
-                  className={cn(
-                    currentPage === 1 && "pointer-events-none opacity-50",
-                  )}
+                  onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                  className={cn(page === 1 && "pointer-events-none opacity-50")}
                 />
               </PaginationItem>
-
-              {Array.from({ length: totalPages }).map((_, index) => (
-                <PaginationItem key={index + 1}>
+              {Array.from({ length: Math.min(totalPages, 5) }).map((_, i) => (
+                <PaginationItem key={i + 1}>
                   <PaginationLink
-                    isActive={currentPage === index + 1}
-                    onClick={() => setCurrentPage(index + 1)}
+                    isActive={page === i + 1}
+                    onClick={() => setPage(i + 1)}
                     className="cursor-pointer"
                   >
-                    {index + 1}
+                    {i + 1}
                   </PaginationLink>
                 </PaginationItem>
               ))}
-
+              {totalPages > 5 && (
+                <span className="text-slate-500 text-sm px-2">...</span>
+              )}
               <PaginationItem>
                 <PaginationNext
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                  }
+                  onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
                   className={cn(
-                    currentPage === totalPages &&
-                      "pointer-events-none opacity-50",
+                    page === totalPages && "pointer-events-none opacity-50",
                   )}
                 />
               </PaginationItem>
@@ -437,96 +345,86 @@ const Payments = () => {
         </div>
       )}
 
-      {/* Payment Detail Modal */}
+      {/* Detail Dialog */}
       <Dialog
         open={!!showPaymentDetail}
         onOpenChange={() => setShowPaymentDetail(null)}
       >
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Payment {showPaymentDetail?.id}</DialogTitle>
-            <DialogDescription>Payment Details</DialogDescription>
+            <DialogTitle>Payment Details</DialogTitle>
+            <DialogDescription>
+              Transaction information and participants
+            </DialogDescription>
           </DialogHeader>
 
           {showPaymentDetail && (
             <div className="space-y-4">
-              {/* Product Image */}
-              <div className="flex h-40 items-center justify-center rounded-lg bg-linear-to-br from-slate-50 to-slate-100 text-5xl">
-                {showPaymentDetail.image}
-              </div>
-
-              {/* Status */}
-              <div className="flex items-center justify-between rounded-lg bg-slate-50 p-3">
-                <span className="text-sm font-medium text-slate-600">
-                  Status:
-                </span>
-                <span
-                  className={cn(
-                    "rounded-full px-3 py-1 text-xs font-medium",
-                    getStatusColor(showPaymentDetail.status),
-                  )}
-                >
-                  {showPaymentDetail.status}
-                </span>
-              </div>
-
-              {/* Product Info */}
-              <div className="space-y-2 text-sm border-b border-slate-200 pb-3">
-                <p className="font-semibold text-slate-900">
-                  {showPaymentDetail.productName}
+              <div className="rounded-lg bg-slate-50 p-3">
+                <p className="text-xs text-slate-500">Product</p>
+                <p className="text-base font-semibold text-slate-900">
+                  {showPaymentDetail.product?.title ?? "—"}
                 </p>
-                <p className="text-xs text-slate-600">
-                  Order ID: {showPaymentDetail.orderID}
+                <p className="text-xs text-slate-500 mt-1">
+                  Brand: {showPaymentDetail.product?.brandName ?? "—"}
                 </p>
               </div>
 
-              {/* Buyer and Seller */}
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div className="rounded-lg bg-slate-50 p-2">
-                  <p className="text-xs text-slate-600">Buyer</p>
-                  <p className="font-medium text-slate-900">
-                    {showPaymentDetail.buyerName}
-                  </p>
-                </div>
-                <div className="rounded-lg bg-slate-50 p-2">
-                  <p className="text-xs text-slate-600">Seller</p>
-                  <p className="font-medium text-slate-900">
-                    {showPaymentDetail.sellerName}
-                  </p>
-                </div>
-              </div>
-
-              {/* Payment Details */}
               <div className="space-y-2 text-sm">
-                <div className="flex justify-between border-b border-slate-200 pb-2">
-                  <span className="text-slate-600">Payment Date:</span>
-                  <span className="font-medium text-slate-900">
-                    {showPaymentDetail.paymentDate}
-                  </span>
-                </div>
-                <div className="flex justify-between border-b border-slate-200 pb-2">
-                  <span className="text-slate-600">Payment Method:</span>
-                  <span className="font-medium text-slate-900">
-                    {showPaymentDetail.paymentMethod}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-600">Email:</span>
-                  <span className="font-medium text-slate-900">
-                    john@example.com
-                  </span>
-                </div>
+                {[
+                  {
+                    label: "Transaction ID",
+                    value: showPaymentDetail.transaction,
+                  },
+                  { label: "Payment ID", value: showPaymentDetail.id },
+                  { label: "Order ID", value: showPaymentDetail.orderId },
+                  {
+                    label: "Amount",
+                    value: formatCurrency(showPaymentDetail.amount),
+                  },
+                  {
+                    label: "Paid At",
+                    value: formatDate(showPaymentDetail.createdAt),
+                  },
+                ].map(({ label, value }) => (
+                  <div
+                    key={label}
+                    className="flex justify-between border-b border-slate-100 pb-2 gap-3"
+                  >
+                    <span className="text-slate-500 shrink-0">{label}</span>
+                    <span className="font-medium text-slate-900 text-right break-all">
+                      {value || "—"}
+                    </span>
+                  </div>
+                ))}
               </div>
 
-              {/* Total */}
-              <div className="rounded-lg bg-blue-50 p-3">
-                <div className="flex justify-between">
-                  <span className="font-medium text-slate-700">
-                    Payment Amount:
-                  </span>
-                  <span className="text-lg font-bold text-blue-600">
-                    {showPaymentDetail.amount}
-                  </span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                <div className="rounded-lg bg-slate-50 p-3 space-y-1">
+                  <p className="text-xs text-slate-500">Buyer</p>
+                  <p className="font-semibold text-slate-900">
+                    {showPaymentDetail.buyer?.name ?? "—"}
+                  </p>
+                  <p className="text-xs text-slate-500 break-all">
+                    {showPaymentDetail.buyer?.email ?? "—"}
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    Status:{" "}
+                    {showPaymentDetail.buyer?.isOnline ? "Online" : "Offline"}
+                  </p>
+                </div>
+                <div className="rounded-lg bg-slate-50 p-3 space-y-1">
+                  <p className="text-xs text-slate-500">Seller</p>
+                  <p className="font-semibold text-slate-900">
+                    {showPaymentDetail.seller?.name ?? "—"}
+                  </p>
+                  <p className="text-xs text-slate-500 break-all">
+                    {showPaymentDetail.seller?.email ?? "—"}
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    Status:{" "}
+                    {showPaymentDetail.seller?.isOnline ? "Online" : "Offline"}
+                  </p>
                 </div>
               </div>
             </div>
