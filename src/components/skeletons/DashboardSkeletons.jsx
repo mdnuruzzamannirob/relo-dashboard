@@ -207,3 +207,38 @@ export const StatsRowSkeleton = ({ count = 3 }) => (
     ))}
   </div>
 );
+
+// ─── Payments ───────────────────────────────────────────────────────────────
+
+export const PaymentTableSkeleton = ({ rows = 8 }) => (
+  <div className="rounded-lg border border-slate-200 bg-white overflow-hidden">
+    <div className="grid grid-cols-7 gap-4 bg-slate-50 px-4 py-3 border-b border-slate-200">
+      {Array.from({ length: 7 }).map((_, i) => (
+        <Pulse key={i} className="h-3 w-full" />
+      ))}
+    </div>
+
+    {Array.from({ length: rows }).map((_, i) => (
+      <div
+        key={i}
+        className="grid grid-cols-7 gap-4 px-4 py-4 border-b border-slate-100 items-center"
+      >
+        <Pulse className="h-3 w-24" />
+        <Pulse className="h-3 w-20" />
+        <div className="space-y-1.5">
+          <Pulse className="h-3 w-28" />
+          <Pulse className="h-2.5 w-20" />
+        </div>
+        <Pulse className="h-4 w-16" />
+        <div className="space-y-1.5">
+          <Pulse className="h-3 w-20" />
+          <Pulse className="h-2.5 w-16" />
+        </div>
+        <Pulse className="h-3 w-28" />
+        <div className="flex justify-end">
+          <Pulse className="h-8 w-16 rounded" />
+        </div>
+      </div>
+    ))}
+  </div>
+);
