@@ -101,9 +101,13 @@ const chatSlice = createSlice({
 
     addMessage: (state, action) => {
       const msg = action.payload;
-      const exists = state.messages.some((m) => m.id === msg.id);
-      if (!exists) {
-        state.messages = [...state.messages, msg].sort(compareMessages);
+
+      // Only add to messages array if it belongs to the active room
+      if (msg.roomId === state.activeRoomId) {
+        const exists = state.messages.some((m) => m.id === msg.id);
+        if (!exists) {
+          state.messages = [...state.messages, msg].sort(compareMessages);
+        }
       }
 
       const chatUser = state.chatUsers.find((u) => u.roomId === msg.roomId);
