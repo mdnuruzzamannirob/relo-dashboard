@@ -57,10 +57,7 @@ export const FilterSelect = ({
 
 export const FilterBar = ({ children, className = "" }) => (
   <div
-    className={cn(
-      "rounded-lg border border-slate-200 bg-white p-4",
-      className,
-    )}
+    className={cn("rounded-lg border border-slate-200 bg-white p-4", className)}
   >
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       {children}
