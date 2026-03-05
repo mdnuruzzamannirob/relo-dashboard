@@ -107,7 +107,7 @@ const Orders = () => {
             searchValue={searchInput}
             onSearchChange={handleSearchChange}
             onClearSearch={handleClearSearch}
-            searchPlaceholder="Search by order ID or buyer name..."
+            searchPlaceholder="Search by order ID"
             filterValue={statusFilter}
             onFilterChange={handleStatusChange}
             filterOptions={ORDER_STATUS_OPTIONS}
@@ -154,7 +154,7 @@ const Orders = () => {
             return (
               <div
                 key={order.id}
-                className="overflow-hidden rounded-lg border border-slate-200 bg-white transition-all hover:shadow-lg hover:border-blue-300 group"
+                className="overflow-hidden rounded-lg border border-slate-200 bg-white group"
               >
                 <div className="p-4">
                   <div className="flex gap-4">

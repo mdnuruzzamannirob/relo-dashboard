@@ -380,32 +380,34 @@ const CategoryAndLocker = () => {
         onValueChange={handleTabChange}
         className="space-y-3"
       >
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <TabsList>
-              <TabsTrigger value="categories">Categories</TabsTrigger>
-              <TabsTrigger value="lockers">Locker Addresses</TabsTrigger>
-            </TabsList>
-            <div className="relative w-full sm:w-72">
-              <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-              <Input
-                placeholder={tabConfig.searchPlaceholder}
-                className="pl-10 h-9"
-                value={searchTerm}
-                onChange={(e) => handleSearchChange(e.target.value)}
-                disabled={currentTabState.isLoading}
-              />
+        <div className="rounded-lg border border-slate-200 bg-white p-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <TabsList>
+                <TabsTrigger value="categories">Categories</TabsTrigger>
+                <TabsTrigger value="lockers">Locker Addresses</TabsTrigger>
+              </TabsList>
+              <div className="relative w-full sm:w-72">
+                <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                <Input
+                  placeholder={tabConfig.searchPlaceholder}
+                  className="pl-10 h-9"
+                  value={searchTerm}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  disabled={currentTabState.isLoading}
+                />
+              </div>
             </div>
-          </div>
 
-          <Button
-            onClick={() => setShowAddDialog(true)}
-            className="flex items-center gap-2"
-            disabled={currentTabState.isLoading || isCreating}
-          >
-            <Plus className="h-4 w-4" />
-            {tabConfig.addLabel}
-          </Button>
+            <Button
+              onClick={() => setShowAddDialog(true)}
+              className="flex items-center gap-2"
+              disabled={currentTabState.isLoading || isCreating}
+            >
+              <Plus className="h-4 w-4" />
+              {tabConfig.addLabel}
+            </Button>
+          </div>
         </div>
 
         <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">

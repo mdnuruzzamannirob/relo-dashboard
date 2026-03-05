@@ -89,7 +89,7 @@ const StatCard = ({
   trend = "up",
   change = "—",
 }) => (
-  <div className="bg-white rounded-lg border border-slate-200 p-4 sm:p-6 transition-all hover:shadow-lg hover:border-blue-200 group">
+  <div className="bg-white rounded-lg border border-slate-200 p-4 sm:p-6 group">
     <div className="flex items-start justify-between mb-3">
       <div
         className={`p-2 sm:p-3 rounded-lg ${bgColor} transition-transform group-hover:scale-110`}
@@ -227,7 +227,7 @@ const Overview = () => {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* User Growth Chart */}
-        <div className="bg-white rounded-lg border border-slate-200 p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white rounded-lg border border-slate-200 p-4 sm:p-6">
           <div className="flex items-center justify-between mb-6 flex-wrap gap-2">
             <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
               <TrendingUp size={18} className="text-blue-500" /> Total Users
@@ -296,7 +296,7 @@ const Overview = () => {
         </div>
 
         {/* Revenue Chart */}
-        <div className="bg-white rounded-lg border border-slate-200 p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white rounded-lg border border-slate-200 p-4 sm:p-6 transition-all hover:border-brand-300 hover:bg-slate-50">
           <div className="flex items-center justify-between mb-6 flex-wrap gap-2">
             <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
               <DollarSign size={18} className="text-orange-500" /> Revenue
@@ -375,7 +375,7 @@ const Overview = () => {
       ) : ordersLoading ? (
         <OverviewTableSkeleton />
       ) : (
-        <div className="bg-white rounded-lg border border-slate-200 p-4 sm:p-6 shadow-sm">
+        <div className="bg-white rounded-lg border border-slate-200 p-4 sm:p-6 transition-all hover:border-brand-300 hover:bg-slate-50">
           <div className="flex items-center justify-between mb-6 flex-wrap gap-2">
             <h2 className="text-lg font-bold text-slate-900">Recent Orders</h2>
             <a

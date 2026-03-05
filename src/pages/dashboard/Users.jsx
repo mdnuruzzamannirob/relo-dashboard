@@ -177,7 +177,7 @@ const Users = () => {
       ) : (
         <div
           className={cn(
-            "rounded-lg border border-slate-200 bg-white transition-opacity overflow-hidden shadow-sm hover:shadow-md",
+            "rounded-lg border border-slate-200 bg-white overflow-hidden",
             isFetching && "opacity-60",
           )}
         >

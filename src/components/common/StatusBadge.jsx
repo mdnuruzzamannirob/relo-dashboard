@@ -3,34 +3,46 @@ import { cn } from "@/lib/utils/cn";
 const statusStyles = {
   // User statuses
   ACTIVE:
-    "bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 border border-emerald-200 shadow-sm",
+    "bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 border border-emerald-200 ",
   INACTIVE:
     "bg-gradient-to-r from-slate-50 to-gray-50 text-slate-600 border border-slate-200",
   BLOCKED:
-    "bg-gradient-to-r from-red-50 to-rose-50 text-red-700 border border-red-200 shadow-sm",
+    "bg-gradient-to-r from-red-50 to-rose-50 text-red-700 border border-red-200 ",
   SUSPENDED:
-    "bg-gradient-to-r from-orange-50 to-amber-50 text-orange-700 border border-orange-200 shadow-sm",
+    "bg-gradient-to-r from-orange-50 to-amber-50 text-orange-700 border border-orange-200 ",
 
   // Order statuses
   COMPLETED:
-    "bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 border border-emerald-200 shadow-sm",
+    "bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 border border-emerald-200 ",
   COMPLETE:
-    "bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 border border-emerald-200 shadow-sm",
+    "bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 border border-emerald-200 ",
   READY:
-    "bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-700 border border-blue-200 shadow-sm",
+    "bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-700 border border-blue-200 ",
   PROCESSING:
-    "bg-gradient-to-r from-amber-50 to-yellow-50 text-amber-700 border border-amber-200 shadow-sm",
+    "bg-gradient-to-r from-amber-50 to-yellow-50 text-amber-700 border border-amber-200 ",
   PENDING:
-    "bg-gradient-to-r from-orange-50 to-amber-50 text-orange-700 border border-orange-200 shadow-sm",
+    "bg-gradient-to-r from-orange-50 to-amber-50 text-orange-700 border border-orange-200 ",
 
   // Product statuses
   AVAILABLE:
-    "bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 border border-emerald-200 shadow-sm",
-  SOLD: "bg-gradient-to-r from-red-50 to-rose-50 text-red-700 border border-red-200 shadow-sm",
+    "bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 border border-emerald-200 ",
+  SOLD: "bg-gradient-to-r from-red-50 to-rose-50 text-red-700 border border-red-200 ",
 
   // Conditions
-  NEW: "bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-200 shadow-sm",
-  USED: "bg-gradient-to-r from-amber-50 to-yellow-50 text-amber-700 border border-amber-200 shadow-sm",
+  NEW: "bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-200 ",
+  USED: "bg-gradient-to-r from-amber-50 to-yellow-50 text-amber-700 border border-amber-200 ",
+
+  // Payment
+
+  HOLD: "bg-gradient-to-r from-orange-50 to-amber-50 text-orange-700 border border-orange-200 ",
+  SUCCESS:
+    "bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 border border-emerald-200 ",
+  FAILED:
+    "bg-gradient-to-r from-red-50 to-rose-50 text-red-700 border border-red-200 ",
+  REFUNDED:
+    "bg-gradient-to-r from-red-50 to-rose-50 text-red-700 border border-red-200 ",
+  RELEASED:
+    "bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 border border-emerald-200 ",
 };
 
 export const StatusBadge = ({

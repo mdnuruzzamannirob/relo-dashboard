@@ -31,6 +31,7 @@ import {
   StatsRowSkeleton,
 } from "@/components/skeletons/DashboardSkeletons";
 import { useGetAllPaymentHistoryQuery } from "@/store/apis/adminApi";
+import { StatusBadge } from "@/components/common/StatusBadge";
 
 const SORT_OPTIONS = [
   { label: "Newest First", value: "desc" },
@@ -132,13 +133,13 @@ const Payments = () => {
           <div className="rounded-lg border border-slate-200 bg-white p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-600">This Page Amount</p>
+                <p className="text-sm text-slate-600">Total Payment</p>
                 <p className="text-2xl font-bold text-emerald-600">
-                  {formatCurrency(totalAmountCurrentPage)}
+                  {formatCurrency(meta?.totalSales)}
                 </p>
               </div>
               <div className="rounded-lg bg-emerald-100 p-3">
-                <Wallet className="h-6 w-6 text-emerald-600" />
+                <TrendingUp className="h-6 w-6 text-emerald-600" />
               </div>
             </div>
           </div>
@@ -146,13 +147,13 @@ const Payments = () => {
           <div className="rounded-lg border border-slate-200 bg-white p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-600">Active Users (Page)</p>
+                <p className="text-sm text-slate-600">Platform Revenue</p>
                 <p className="text-2xl font-bold text-blue-600">
-                  {activeNowCount}
+                  {formatCurrency(meta?.platformCommission)}
                 </p>
               </div>
               <div className="rounded-lg bg-blue-100 p-3">
-                <TrendingUp className="h-6 w-6 text-blue-600" />
+                <Wallet className="h-6 w-6 text-blue-600" />
               </div>
             </div>
           </div>
@@ -171,12 +172,12 @@ const Payments = () => {
       )}
 
       {/* Search + Sort */}
-      <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="rounded-lg border border-slate-200 bg-white p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative w-full sm:max-w-md">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 pointer-events-none" />
             <Input
-              placeholder="Search by buyer, seller, order ID or product..."
+              placeholder="Search by order ID, buyer or seller name..."
               className="pl-10 pr-10"
               value={searchInput}
               onChange={handleSearchChange}
@@ -220,7 +221,7 @@ const Payments = () => {
       ) : (
         <div
           className={cn(
-            "rounded-lg border border-slate-200 bg-white overflow-hidden transition-opacity shadow-sm hover:shadow-md",
+            "rounded-lg border border-slate-200 bg-white overflow-hidden",
             isFetching && "opacity-60",
           )}
         >
@@ -241,7 +242,16 @@ const Payments = () => {
                     Amount
                   </th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-slate-600">
-                    Buyer / Seller
+                    Fee
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-600">
+                    Buyer
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-600">
+                    Seller
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-600">
+                    Status
                   </th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-slate-600">
                     Paid At
@@ -258,8 +268,8 @@ const Payments = () => {
                     key={payment.id}
                     className="border-b border-slate-100 hover:bg-slate-50"
                   >
-                    <td className="px-4 py-3 text-sm font-medium text-slate-900">
-                      <p className="line-clamp-1">
+                    <td className="px-4 py-3 max-w-20  text-sm font-medium text-slate-900">
+                      <p className="line-clamp-1 truncate">
                         {payment.transaction ?? "—"}
                       </p>
                     </td>
@@ -277,14 +287,23 @@ const Payments = () => {
                     <td className="px-4 py-3 text-sm font-semibold text-slate-900">
                       {formatCurrency(payment.amount)}
                     </td>
+                    <td className="px-4 py-3 text-sm font-semibold text-slate-900">
+                      {formatCurrency(payment.orderFee)}
+                    </td>
                     <td className="px-4 py-3 text-sm text-slate-700">
                       <p className="line-clamp-1">
-                        B: {payment.buyer?.name ?? "—"}
-                      </p>
-                      <p className="line-clamp-1 text-xs text-slate-500">
-                        S: {payment.seller?.name ?? "—"}
+                        {payment.buyer?.name ?? "—"}
                       </p>
                     </td>
+                    <td className="px-4 py-3 text-sm text-slate-700">
+                      <p className="line-clamp-1">
+                        {payment.seller?.name ?? "—"}
+                      </p>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-slate-700">
+                      <StatusBadge status={payment.status} />
+                    </td>
+
                     <td className="px-4 py-3 text-sm text-slate-600">
                       {formatDate(payment.createdAt)}
                     </td>
@@ -381,6 +400,14 @@ const Payments = () => {
                   {
                     label: "Amount",
                     value: formatCurrency(showPaymentDetail.amount),
+                  },
+                  {
+                    label: "Fee",
+                    value: formatCurrency(showPaymentDetail?.orderFee),
+                  },
+                  {
+                    label: "Status",
+                    value: showPaymentDetail.status,
                   },
                   {
                     label: "Paid At",

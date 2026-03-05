@@ -131,7 +131,7 @@ const Products = () => {
           {products.map((product) => (
             <div
               key={product.id}
-              className="overflow-hidden rounded-lg border border-slate-200 bg-white transition-all hover:shadow-lg hover:border-blue-300 group"
+              className="overflow-hidden rounded-lg border border-slate-200 bg-white group"
             >
               {/* Image */}
               <div className="relative flex h-48 items-center justify-center bg-linear-to-br from-slate-50 to-slate-100 overflow-hidden">
@@ -144,7 +144,7 @@ const Products = () => {
                 ) : (
                   <Package className="h-12 w-12 text-slate-300" />
                 )}
-                <span className="absolute top-2 right-2 rounded-full px-2.5 py-1 text-xs font-semibold bg-linear-to-r from-slate-800 to-slate-700 text-white shadow-sm">
+                <span className="absolute top-2 right-2 rounded-full px-2.5 py-1 text-xs font-semibold bg-linear-to-r from-slate-800 to-slate-700 text-white">
                   {product.condition ?? "—"}
                 </span>
               </div>

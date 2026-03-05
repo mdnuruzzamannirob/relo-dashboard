@@ -74,7 +74,7 @@ const Messages = () => {
   if (error && !isConnected) {
     return (
       <div className="flex h-[calc(100vh-120px)] items-center justify-center">
-        <div className="flex w-full max-w-md flex-col items-center gap-4 rounded-xl border border-slate-100 bg-white p-8 text-center shadow-sm">
+        <div className="flex w-full max-w-md flex-col items-center gap-4 rounded-xl border border-slate-100 bg-white p-8 text-center">
           <div className="rounded-full bg-red-50 p-4">
             <WifiOff className="h-8 w-8 text-red-400" />
           </div>
@@ -100,7 +100,7 @@ const Messages = () => {
   if (!isAuthenticated && !error) {
     return (
       <div className="flex h-[calc(100vh-120px)] items-center justify-center">
-        <div className="flex flex-col items-center gap-3 rounded-xl border border-slate-100 bg-white p-8 shadow-sm">
+        <div className="flex flex-col items-center gap-3 rounded-xl border border-slate-100 bg-white p-8">
           <div className="animate-pulse rounded-full bg-brand-50 p-4">
             <MessageSquare className="h-8 w-8 text-brand-400" />
           </div>

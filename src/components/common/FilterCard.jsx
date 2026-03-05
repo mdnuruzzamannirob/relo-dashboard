@@ -58,7 +58,7 @@ export const FilterSelect = ({
 export const FilterBar = ({ children, className = "" }) => (
   <div
     className={cn(
-      "rounded-lg border border-slate-200 bg-white p-4 shadow-sm",
+      "rounded-lg border border-slate-200 bg-white p-4",
       className,
     )}
   >

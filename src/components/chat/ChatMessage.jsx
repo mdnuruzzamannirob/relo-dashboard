@@ -62,8 +62,8 @@ const ChatMessage = ({ message, isOwn, showAvatar }) => {
           <div
             className={`inline-block rounded-2xl px-3.5 py-2 text-sm ${
               isOwn
-                ? "rounded-br-none bg-brand-500 text-white shadow-sm"
-                : "rounded-bl-none border border-slate-200 bg-white text-slate-800 shadow-sm"
+                ? "rounded-br-none bg-brand-500 text-white"
+                : "rounded-bl-none border border-slate-200 bg-white text-slate-800"
             }`}
           >
             <p className="whitespace-pre-wrap wrap-break-word">

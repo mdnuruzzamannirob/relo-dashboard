@@ -277,7 +277,7 @@ const ChatArea = ({
               {/* Date separator */}
               <div className="my-4 flex items-center gap-3">
                 <div className="h-px flex-1 bg-slate-200" />
-                <span className="shrink-0 rounded-full bg-white px-3 py-1 text-[10px] font-medium text-slate-400 shadow-sm">
+                <span className="shrink-0 rounded-full bg-white px-3 py-1 text-[10px] font-medium text-slate-400">
                   {group.date}
                 </span>
                 <div className="h-px flex-1 bg-slate-200" />

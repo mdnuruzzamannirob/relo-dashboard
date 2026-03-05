@@ -43,7 +43,7 @@ const Login = () => {
 
   return (
     <div className="flex min-h-dvh items-center justify-center py-14">
-      <div className="border-brand-100 w-full max-w-120 rounded-xl border p-8 shadow-sm">
+      <div className="border-brand-100 w-full max-w-120 rounded-xl border p-8">
         {/* Title */}
         <div className="mb-5 flex flex-col items-center text-center">
           <Logo />
